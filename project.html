@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!--
     You don't need to edit this file.
-    All of your content (name, projects, links) lives in js/config.js.
+    Each project's page is filled in from js/config.js.
   -->
   <title>Portfolio</title>
   <meta name="description" content="">
@@ -23,7 +23,7 @@
     } catch (e) {}
   </script>
 </head>
-<body data-page="home">
+<body data-page="project">
   <a class="skip-link" href="#main">Skip to content</a>
 
   <div class="error-banner" id="config-error" role="alert" hidden></div>
@@ -39,33 +39,7 @@
   </header>
 
   <main id="main">
-    <section class="hero" id="top">
-      <h1 class="hero-name" id="hero-name"></h1>
-      <p class="hero-intro" id="hero-intro"></p>
-      <ul class="hero-links" id="hero-links"></ul>
-    </section>
-
-    <section class="section" id="projects" aria-labelledby="projects-heading" hidden>
-      <h2 id="projects-heading">Projects</h2>
-      <div class="project-grid" id="project-list"></div>
-    </section>
-
-    <section class="section" id="experience" aria-labelledby="experience-heading" hidden>
-      <h2 id="experience-heading">Experience</h2>
-      <ol class="timeline" id="timeline"></ol>
-    </section>
-
-    <section class="section" id="gallery" aria-labelledby="gallery-heading" hidden>
-      <h2 id="gallery-heading">Gallery</h2>
-      <div class="gallery" id="gallery-list"></div>
-    </section>
-
-    <section class="section contact" id="contact" aria-labelledby="contact-heading" hidden>
-      <h2 id="contact-heading">Contact</h2>
-      <p id="contact-note"></p>
-      <p><a class="button" id="contact-button" href="#">Email me</a></p>
-    </section>
-
+    <article class="project-page" id="project"></article>
     <noscript>
       <p class="noscript">This site needs JavaScript turned on to show its content.</p>
     </noscript>
