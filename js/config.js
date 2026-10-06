@@ -81,7 +81,7 @@ const SITE = {
       description: "Relevant coursework: a few courses that match the jobs you want.",
     },
   ],
-
+spaceBackground: true,
 
   // ---------- Contact section ----------
   contactNote: "The fastest way to reach me is email. I'm happy to talk about roles, projects, or anything on this page.",
