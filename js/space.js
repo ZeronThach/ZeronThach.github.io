@@ -130,9 +130,23 @@
           <path d="M14 124c40-6 90-8 160-4" stroke="#7aa2f5"/><path d="M50 160c30-4 60-4 100-10" stroke="#4a3fc4"/>
         </g>
         <ellipse cx="130" cy="108" rx="18" ry="10" fill="#183d9e"/></svg>` },
-    pluto: { vb: { w: 200, h: 200 }, svg: `<svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#c9a07a"/>
-        <path d="M112 150C84 132 66 116 66 96c0-14 10-24 22-24 10 0 18 6 24 14 6-8 14-14 24-14 12 0 22 10 22 24 0 20-18 36-46 54z" fill="#f4e2cc"/>
-        <circle cx="48" cy="70" r="10" fill="#a87e5a"/><circle cx="58" cy="142" r="7" fill="#a87e5a"/></svg>` },
+   pluto: {
+  vb: { w: 200, h: 200 },
+  svg: `<svg viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="96" fill="#c9a07a"/>
+
+    <circle cx="48" cy="70" r="10" fill="#a87e5a"/>
+    <circle cx="58" cy="142" r="7" fill="#a87e5a"/>
+    <circle cx="145" cy="52" r="8" fill="#a87e5a"/>
+    <circle cx="165" cy="105" r="6" fill="#a87e5a"/>
+    <circle cx="125" cy="155" r="9" fill="#a87e5a"/>
+    <circle cx="85" cy="45" r="6" fill="#a87e5a"/>
+    <circle cx="38" cy="115" r="5" fill="#a87e5a"/>
+    <circle cx="105" cy="115" r="5" fill="#a87e5a"/>
+    <circle cx="75" cy="170" r="5" fill="#a87e5a"/>
+    <circle cx="155" cy="145" r="4" fill="#a87e5a"/>
+  </svg>`
+},
   };
 
   function issSvg() {
