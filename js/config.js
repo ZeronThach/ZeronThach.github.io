@@ -17,17 +17,16 @@
 const SITE = {
 
   // ---------- About you ----------
-  name: "Your Name",
-  role: "Software Developer",   // shown in the browser tab
+  name: "Zeron Thach",
+  role: "",   // shown in the browser tab
   intro: "One or two sentences about what you build and what kind of role you're looking for.",
 
   // Your email. It's used for the contact button. Leave "" to hide the contact section.
-  email: "you@example.com",
+  email: "ZeronThach04.com",
 
   // Links shown under your name. Add or remove lines as you like.
   links: [
-    { label: "GitHub",   url: "https://github.com/your-username" },
-    { label: "LinkedIn", url: "https://www.linkedin.com/in/your-profile" },
+    { label: "LinkedIn", url: "https://www.linkedin.com/in/zeron-t-383598283/" },
   ],
 
   // Upload your resume to the assets folder and put its file name here,
