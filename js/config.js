@@ -81,7 +81,8 @@ const SITE = {
       description: "Relevant coursework: a few courses that match the jobs you want.",
     },
   ],
-
+  
+    // ---------- Space background ----------
    // Planets down one side, a rocket that follows visitors as they scroll
   // (showing how far it is from Earth), and space objects they can drag and flick.
   // It only shows on screens wide enough to have room beside your content.
