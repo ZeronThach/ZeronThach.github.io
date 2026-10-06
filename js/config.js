@@ -27,7 +27,6 @@ const SITE = {
   // Links shown under your name. Add or remove lines as you like.
   links: [
     { label: "LinkedIn", url: "https://www.linkedin.com/in/zeron-t-383598283/" },
-    { label: "Email", url: "mailto:ZeronThach04.com" }
   ],
 
   // Upload your resume to the assets folder and put its file name here,
