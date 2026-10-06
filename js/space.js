@@ -58,6 +58,7 @@
 
   const mirrored = String(cfg.planetsSide || "left").toLowerCase() === "right";
   const peek = clamp(num(cfg.planetPeek, 0.6), 0.1, 1);
+  const beltPosition = cfg.beltPosition === false ? null : clamp(num(cfg.beltPosition, 0.5), 0, 1);
   const rocketCfg = cfg.rocket || {};
   const planetList = (Array.isArray(cfg.planets) && cfg.planets.length ? cfg.planets : DEFAULT_PLANETS)
     .filter((p) => p && (has(p.name) || has(p.image)));
@@ -130,23 +131,9 @@
           <path d="M14 124c40-6 90-8 160-4" stroke="#7aa2f5"/><path d="M50 160c30-4 60-4 100-10" stroke="#4a3fc4"/>
         </g>
         <ellipse cx="130" cy="108" rx="18" ry="10" fill="#183d9e"/></svg>` },
-   pluto: {
-  vb: { w: 200, h: 200 },
-  svg: `<svg viewBox="0 0 200 200">
-    <circle cx="100" cy="100" r="96" fill="#c9a07a"/>
-
-    <circle cx="48" cy="70" r="10" fill="#a87e5a"/>
-    <circle cx="58" cy="142" r="7" fill="#a87e5a"/>
-    <circle cx="145" cy="52" r="8" fill="#a87e5a"/>
-    <circle cx="165" cy="105" r="6" fill="#a87e5a"/>
-    <circle cx="125" cy="155" r="9" fill="#a87e5a"/>
-    <circle cx="85" cy="45" r="6" fill="#a87e5a"/>
-    <circle cx="38" cy="115" r="5" fill="#a87e5a"/>
-    <circle cx="105" cy="115" r="5" fill="#a87e5a"/>
-    <circle cx="75" cy="170" r="5" fill="#a87e5a"/>
-    <circle cx="155" cy="145" r="4" fill="#a87e5a"/>
-  </svg>`
-},
+    pluto: { vb: { w: 200, h: 200 }, svg: `<svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#c9a07a"/>
+        <path d="M112 150C84 132 66 116 66 96c0-14 10-24 22-24 10 0 18 6 24 14 6-8 14-14 24-14 12 0 22 10 22 24 0 20-18 36-46 54z" fill="#f4e2cc"/>
+        <circle cx="48" cy="70" r="10" fill="#a87e5a"/><circle cx="58" cy="142" r="7" fill="#a87e5a"/></svg>` },
   };
 
   function issSvg() {
@@ -286,11 +273,15 @@
   const START_X = [0.5, 0.75, 0.3, 0.15, 0.55, 0.85, 0.35, 0.5, 0.2, 0.7];
   const objects = objectList.map((o, i) => {
     const el = document.createElement("div");
-    el.className = "space-object";
+    const roam = o.roam === true;
+    el.className = roam ? "space-object space-object--roam" : "space-object";
     layer.append(el);
     const drawing = OBJECT_ART[String(o.drawing || "").toLowerCase()] || OBJECT_ART.star;
     return {
       el,
+      roam,                                         // flies across the whole page, behind everything
+      speedBoost: Math.max(0.1, num(o.speed, 1)),   // how hard a flick throws it
+      coast: Math.max(0, num(o.coast, 0)),          // seconds at full speed before slowing down
       size: num(o.size, 80),
       ratio: fillArt(el, o.image, drawing),
       fx: START_X[i % START_X.length],
@@ -403,6 +394,7 @@
       const h = w * p.ratio();
       const visible = Math.min(w * peek, planetMargin * 0.45);
       p.rightEdge = visible;
+      p.h = h;
       Object.assign(p.el.style, {
         width: w + "px",
         height: h + "px",
@@ -426,6 +418,10 @@
 
   // ---------- Objects: positions, dragging, and flicking ----------
   function bounds(o) {
+    // Roaming objects can go anywhere once they've been thrown; the rest stay in their margin
+    if (o.roam && o.hasRoamed) {
+      return { minX: 8, maxX: Math.max(8, G.vw - o.w - 8), minY: 80, maxY: Math.max(80, G.H - o.h - 10) };
+    }
     const minX = mirrored ? 8 : G.mainRight + 8;
     const maxX = Math.max(minX, mirrored ? G.mainLeft - o.w - 8 : G.vw - o.w - 8);
     return { minX, maxX, minY: 80, maxY: Math.max(80, G.H - o.h - 10) };
@@ -471,37 +467,50 @@
     if (reduceMotion) return;
     const speed = Math.hypot(vx, vy);           // pixels per millisecond
     if (speed < 0.2) return;
-    const maxSpeed = 3;
-    if (speed > maxSpeed) { vx *= maxSpeed / speed; vy *= maxSpeed / speed; }
+
+    // Roaming objects always go fast; others go as fast as they were thrown (up to a limit)
+    const target = o.roam
+      ? clamp(speed * o.speedBoost, 2.5, 5)
+      : Math.min(speed * o.speedBoost, 3 * o.speedBoost);
+    vx *= target / speed;
+    vy *= target / speed;
 
     o.vx = vx;
     o.vy = vy;
     o.spin = vx * 0.25;                          // degrees per millisecond
     o.flying = true;
     o.el.classList.add("is-flying");
-    let last = performance.now();
+    const bounce = o.roam ? 0.97 : 0.8;          // how much speed is kept after hitting an edge
+    const startTime = performance.now();
+    let last = startTime;
 
     const step = (now) => {
       const dt = Math.min(32, now - last);
       last = now;
       o.x += o.vx * dt;
       o.y += o.vy * dt;
-      o.angle += o.spin * dt;
 
       const b = flightBounds(o);
-      if (o.x < b.minX) { o.x = b.minX; o.vx = Math.abs(o.vx) * 0.8; o.spin *= -0.8; }
-      if (o.x > b.maxX) { o.x = b.maxX; o.vx = -Math.abs(o.vx) * 0.8; o.spin *= -0.8; }
-      if (o.y < b.minY) { o.y = b.minY; o.vy = Math.abs(o.vy) * 0.8; }
-      if (o.y > b.maxY) { o.y = b.maxY; o.vy = -Math.abs(o.vy) * 0.8; }
+      if (o.x < b.minX) { o.x = b.minX; o.vx = Math.abs(o.vx) * bounce; o.spin *= -0.8; }
+      if (o.x > b.maxX) { o.x = b.maxX; o.vx = -Math.abs(o.vx) * bounce; o.spin *= -0.8; }
+      if (o.y < b.minY) { o.y = b.minY; o.vy = Math.abs(o.vy) * bounce; }
+      if (o.y > b.maxY) { o.y = b.maxY; o.vy = -Math.abs(o.vy) * bounce; }
 
-      // Slow down smoothly: after about a second it's barely moving
-      const drag = Math.exp(-dt / 200);
+      // Roaming objects point the way they're flying (so a comet's tail trails behind it).
+      // Pictures for them should face right. Everything else tumbles.
+      if (o.roam) o.angle = (Math.atan2(o.vy, o.vx) * 180) / Math.PI;
+      else o.angle += o.spin * dt;
+
+      // Keep nearly full speed while coasting, then slow down smoothly
+      const coasting = now - startTime < o.coast * 1000;
+      const slowdown = coasting ? 30000 : o.roam ? 600 : 200;
+      const drag = Math.exp(-dt / slowdown);
       o.vx *= drag;
       o.vy *= drag;
       o.spin *= drag;
       render(o);
 
-      if (Math.hypot(o.vx, o.vy) > 0.02) {
+      if (coasting || Math.hypot(o.vx, o.vy) > 0.02) {
         o.raf = requestAnimationFrame(step);
       } else {
         stopFlying(o);
@@ -518,6 +527,7 @@
     o.el.addEventListener("pointerdown", (e) => {
       e.preventDefault();
       stopFlying(o);
+      if (o.roam) o.hasRoamed = true;
       o.el.setPointerCapture(e.pointerId);
       grab = { dx: e.clientX + window.scrollX - o.x, dy: e.clientY + window.scrollY - o.y };
       samples = [{ t: e.timeStamp, x: o.x, y: o.y }];
@@ -572,8 +582,12 @@
     const find = (n) => planets.find((p) => p.name.toLowerCase() === n);
     const mars = find("mars");
     const jupiter = find("jupiter");
-    if (mars && jupiter) {
-      const beltY = (mars.y + jupiter.y) / 2;
+    if (mars && jupiter && beltPosition !== null) {
+      // Place the belt in the empty space between Mars's bottom edge and Jupiter's top edge
+      let from = mars.y + mars.h / 2;
+      let to = jupiter.y - jupiter.h / 2;
+      if (to <= from) { from = mars.y; to = jupiter.y; }   // planets overlap: use their centers
+      const beltY = from + beltPosition * (to - from);
       const beltH = 120 * scale;
       const rocks = ["#b97b55", "#a86a45", "#c98d66"];
       strips.forEach(([a, b]) => {
