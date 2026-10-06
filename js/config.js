@@ -107,10 +107,10 @@ const SITE = {
       { name: "Earth",   distance: "Liftoff",         image: "", size: 170, gap: 1 },
       { name: "Mars",    distance: "78 million km",   image: "", size: 120, gap: 0 },
       { name: "Jupiter", distance: "629 million km",  image: "", size: 300, gap: 5 },
-      { name: "Saturn",  distance: "1.28 billion km", image: "", size: 440, gap: 1.5 },
-      { name: "Uranus",  distance: "2.72 billion km", image: "", size: 190, gap: 1.5 },
-      { name: "Neptune", distance: "4.35 billion km", image: "", size: 170, gap: 1.5 },
-      { name: "Pluto",   distance: "5.76 billion km", image: "", size: 75,  gap: 1.5 },
+      { name: "Saturn",  distance: "1.28 billion km", image: "", size: 440, gap: 4 },
+      { name: "Uranus",  distance: "2.72 billion km", image: "", size: 190, gap: 3 },
+      { name: "Neptune", distance: "4.35 billion km", image: "", size: 170, gap: 3 },
+      { name: "Pluto",   distance: "5.76 billion km", image: "", size: 75,  gap: 3 },
     ],
 
     // Objects visitors can drag and flick, listed top to bottom.
