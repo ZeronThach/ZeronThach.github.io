@@ -105,8 +105,8 @@ const SITE = {
     //   distance: the text shown next to the rocket as it passes
     planets: [
       { name: "Earth",   distance: "Liftoff",         image: "", size: 170, gap: 1 },
-      { name: "Mars",    distance: "78 million km",   image: "", size: 120, gap: 0.1 },
-      { name: "Jupiter", distance: "629 million km",  image: "", size: 300, gap: 1.3 },
+      { name: "Mars",    distance: "78 million km",   image: "", size: 120, gap: 0 },
+      { name: "Jupiter", distance: "629 million km",  image: "", size: 300, gap: 5 },
       { name: "Saturn",  distance: "1.28 billion km", image: "", size: 440, gap: 1.5 },
       { name: "Uranus",  distance: "2.72 billion km", image: "", size: 190, gap: 1.5 },
       { name: "Neptune", distance: "4.35 billion km", image: "", size: 170, gap: 1.5 },
