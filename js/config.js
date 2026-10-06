@@ -81,7 +81,55 @@ const SITE = {
       description: "Relevant coursework: a few courses that match the jobs you want.",
     },
   ],
-spaceBackground: true,
+
+   // Planets down one side, a rocket that follows visitors as they scroll
+  // (showing how far it is from Earth), and space objects they can drag and flick.
+  // It only shows on screens wide enough to have room beside your content.
+  //
+  // Pictures: leave image as "" to use the built-in drawing, or upload your own
+  // to assets/img and put its path here. PNG files with a transparent background
+  // look best (otherwise you'll see a box around the planet).
+  space: {
+    on: true,                 // false turns the whole space background off
+    planetsSide: "left",      // "left" or "right". The draggable objects go on the other side.
+    planetPeek: 0.6,          // how much of each planet sticks out from the edge (0.5 = half, 1 = all)
+
+    // A picture of a rocket should point UP; the site turns it to face the way it's flying.
+    rocket: { image: "", size: 56 },
+
+    // The rocket passes these from top to bottom. Add, remove, or reorder them freely.
+    //   size:     width in pixels on a large screen (smaller screens shrink everything to fit)
+    //   gap:      how much space comes before this planet compared to the others.
+    //             1 = normal, 2 = twice as far, 0.5 = half as far. The first planet is always at the top.
+    //   distance: the text shown next to the rocket as it passes
+    planets: [
+      { name: "Earth",   distance: "Liftoff",         image: "", size: 170, gap: 1 },
+      { name: "Mars",    distance: "78 million km",   image: "", size: 120, gap: 1 },
+      { name: "Jupiter", distance: "629 million km",  image: "", size: 300, gap: 1 },
+      { name: "Saturn",  distance: "1.28 billion km", image: "", size: 440, gap: 1 },
+      { name: "Uranus",  distance: "2.72 billion km", image: "", size: 190, gap: 1 },
+      { name: "Neptune", distance: "4.35 billion km", image: "", size: 170, gap: 1 },
+      { name: "Pluto",   distance: "5.76 billion km", image: "", size: 75,  gap: 1 },
+    ],
+
+    // Objects visitors can drag and flick, listed top to bottom.
+    //   drawing: built-in picture to use when image is "". Options: "iss", "astronaut",
+    //            "satellite", "ufo", "comet", "star", "sparkle"
+    //   size:    width in pixels on a large screen
+    objects: [
+      { drawing: "iss",       image: "", size: 210 },
+      { drawing: "star",      image: "", size: 52 },
+      { drawing: "astronaut", image: "", size: 90 },
+      { drawing: "sparkle",   image: "", size: 40 },
+      { drawing: "satellite", image: "", size: 150 },
+      { drawing: "sparkle",   image: "", size: 58 },
+      { drawing: "ufo",       image: "", size: 130 },
+      { drawing: "comet",     image: "", size: 180 },
+      { drawing: "star",      image: "", size: 40 },
+      { drawing: "sparkle",   image: "", size: 46 },
+    ],
+  },
+
 
   // ---------- Contact section ----------
   contactNote: "The fastest way to reach me is email. I'm happy to talk about roles, projects, or anything on this page.",
