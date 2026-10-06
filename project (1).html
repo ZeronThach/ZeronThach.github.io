@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--
+    You don't need to edit this file.
+    Each project's page is filled in from js/config.js.
+  -->
+  <title>Portfolio</title>
+  <meta name="description" content="">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Apply the saved light/dark choice before the page draws, so it doesn't flash -->
+  <script>
+    try {
+      const saved = localStorage.getItem("theme");
+      if (saved) document.documentElement.dataset.theme = saved;
+    } catch (e) {}
+  </script>
+</head>
+<body data-page="project">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="error-banner" id="config-error" role="alert" hidden></div>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Main">
+      <a class="nav-home" id="nav-home" href="#top"></a>
+      <ul class="nav-links" id="nav-links"></ul>
+      <button class="theme-toggle" type="button" aria-label="Switch between light and dark mode">
+        <span class="theme-toggle-icon" aria-hidden="true"></span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <article class="project-page" id="project"></article>
+    <noscript>
+      <p class="noscript">This site needs JavaScript turned on to show its content.</p>
+    </noscript>
+  </main>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
+    <button class="lightbox-close" type="button" aria-label="Close photo">✕</button>
+    <figure>
+      <img id="lightbox-img" src="" alt="">
+      <figcaption id="lightbox-caption"></figcaption>
+    </figure>
+    <div class="lightbox-nav">
+      <button type="button" id="lightbox-prev">Previous</button>
+      <button type="button" id="lightbox-next">Next</button>
+    </div>
+  </dialog>
+
+  <footer class="site-footer">
+    <p id="footer-text"></p>
+  </footer>
+
+  <!-- config.js must load before main.js -->
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/space.js"></script>
+</body>
+</html>
