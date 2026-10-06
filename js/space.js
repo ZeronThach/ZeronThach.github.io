@@ -1,21 +1,31 @@
 /*
   You don't need to edit this file.
-  It draws the space background when  spaceBackground: true  is set in js/config.js:
-  - planets from Earth to Pluto down the left side
+  All of the space background's settings (pictures, sizes, gaps) are in js/config.js.
+
+  What it draws when the space background is on:
+  - planets down one side of the page
   - a rocket that stays mid-screen as you scroll, leaving a dashed trail
     and showing its distance from Earth each time it passes a planet
-  - space objects on the right side that visitors can drag around
+  - space objects on the other side that visitors can drag and flick
   It only appears when the screen is wide enough to fit beside your content.
 */
 
 (function () {
-  if (typeof SITE === "undefined" || SITE.spaceBackground !== true) return;
+  if (typeof SITE === "undefined") return;
+
+  // Older config files used  spaceBackground: true ; newer ones use a  space: { ... }  section
+  const cfg = SITE.space || {};
+  const isOn = SITE.space ? cfg.on !== false : SITE.spaceBackground === true;
+  if (!isOn) return;
 
   const root = document.documentElement;
   const main = document.querySelector("main");
   if (!main) return;
 
+  const has = (v) => typeof v === "string" && v.trim() !== "";
+  const num = (v, fallback) => (typeof v === "number" && isFinite(v) ? v : fallback);
   const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Always produces the same "random" numbers, so the stars and asteroids don't jump around
   function seeded(seed) {
@@ -27,16 +37,48 @@
     };
   }
 
+  // ---------- Settings, with defaults for anything config.js leaves out ----------
+  // Distances are roughly how close each planet gets to Earth
+  // (its average distance from the Sun minus Earth's). Fun, not exact.
+  const DEFAULT_PLANETS = [
+    { name: "Earth",   distance: "Liftoff",         size: 170 },
+    { name: "Mars",    distance: "78 million km",   size: 120 },
+    { name: "Jupiter", distance: "629 million km",  size: 300 },
+    { name: "Saturn",  distance: "1.28 billion km", size: 440 },
+    { name: "Uranus",  distance: "2.72 billion km", size: 190 },
+    { name: "Neptune", distance: "4.35 billion km", size: 170 },
+    { name: "Pluto",   distance: "5.76 billion km", size: 75 },
+  ];
+  const DEFAULT_OBJECTS = [
+    { drawing: "iss", size: 210 }, { drawing: "star", size: 52 }, { drawing: "astronaut", size: 90 },
+    { drawing: "sparkle", size: 40 }, { drawing: "satellite", size: 150 }, { drawing: "sparkle", size: 58 },
+    { drawing: "ufo", size: 130 }, { drawing: "comet", size: 180 }, { drawing: "star", size: 40 },
+    { drawing: "sparkle", size: 46 },
+  ];
+
+  const mirrored = String(cfg.planetsSide || "left").toLowerCase() === "right";
+  const peek = clamp(num(cfg.planetPeek, 0.6), 0.1, 1);
+  const rocketCfg = cfg.rocket || {};
+  const planetList = (Array.isArray(cfg.planets) && cfg.planets.length ? cfg.planets : DEFAULT_PLANETS)
+    .filter((p) => p && (has(p.name) || has(p.image)));
+  const objectList = (Array.isArray(cfg.objects) ? cfg.objects : DEFAULT_OBJECTS).filter(Boolean);
+  if (!planetList.length) return;
+
+  // Shows a red banner if a picture can't be found, so it's not a silent mystery
+  function reportMissing(path) {
+    const banner = document.getElementById("config-error");
+    if (!banner) return;
+    const line = document.createElement("div");
+    line.textContent = `Couldn't load "${path}". Check that the file is uploaded and the name matches exactly, including capital letters.`;
+    banner.append(line);
+    banner.hidden = false;
+  }
+
   const OUTLINE = "#232a33";
 
-  // ---------- Artwork ----------
-  // Each planet lists its viewBox size and where its round body sits (cx, cy, r),
-  // so it can be tucked partly off the left edge of the screen.
-  const PLANETS = [
-    {
-      name: "Earth", distance: "Liftoff", diameter: 170,
-      vb: { w: 200, h: 200 }, disc: { cx: 100, cy: 100, r: 96 },
-      svg: `<svg viewBox="0 0 200 200"><defs><clipPath id="sp-earth"><circle cx="100" cy="100" r="96"/></clipPath></defs>
+  // ---------- Built-in drawings (used when no image is set) ----------
+  const DRAWN_PLANETS = {
+    earth: { vb: { w: 200, h: 200 }, svg: `<svg viewBox="0 0 200 200"><defs><clipPath id="sp-earth"><circle cx="100" cy="100" r="96"/></clipPath></defs>
         <circle cx="100" cy="100" r="96" fill="#1e9be0"/>
         <g clip-path="url(#sp-earth)">
           <g fill="#2fb34f">
@@ -45,26 +87,16 @@
             <path d="M20 110c12 0 22 12 18 26-4 12 4 26-8 32-12 4-24-20-24-36 0-12 4-22 14-22z"/>
           </g>
           <g fill="#ffffff"><ellipse cx="70" cy="14" rx="34" ry="11"/><ellipse cx="128" cy="186" rx="40" ry="12"/><ellipse cx="160" cy="50" rx="18" ry="6"/></g>
-        </g></svg>`,
-    },
-    {
-      // Distances are roughly how close each planet gets to Earth
-      // (its average distance from the Sun minus Earth's). Fun, not exact.
-      name: "Mars", distance: "78 million km", diameter: 120,
-      vb: { w: 200, h: 200 }, disc: { cx: 100, cy: 100, r: 96 },
-      svg: `<svg viewBox="0 0 200 200"><defs><clipPath id="sp-mars"><circle cx="100" cy="100" r="96"/></clipPath></defs>
+        </g></svg>` },
+    mars: { vb: { w: 200, h: 200 }, svg: `<svg viewBox="0 0 200 200"><defs><clipPath id="sp-mars"><circle cx="100" cy="100" r="96"/></clipPath></defs>
         <circle cx="100" cy="100" r="96" fill="#f07a2a"/>
         <g clip-path="url(#sp-mars)">
           <ellipse cx="100" cy="6" rx="46" ry="16" fill="#fff4ea"/>
           <path d="M60 52c14-8 34-2 38 12 3 12-12 14-10 26 2 10-12 16-22 8-10-8-2-20-12-28-8-6-4-14 6-18z" fill="#d6372b"/>
           <path d="M118 120c16-10 40-6 46 8 5 12-14 16-24 24-12 10-28 14-34 4-6-12 2-28 12-36z" fill="#d6372b"/>
           <circle cx="150" cy="70" r="9" fill="#c43226"/><circle cx="56" cy="140" r="12" fill="#de5a2c"/>
-        </g></svg>`,
-    },
-    {
-      name: "Jupiter", distance: "629 million km", diameter: 300,
-      vb: { w: 200, h: 200 }, disc: { cx: 100, cy: 100, r: 96 },
-      svg: `<svg viewBox="0 0 200 200"><defs><clipPath id="sp-jupiter"><circle cx="100" cy="100" r="96"/></clipPath></defs>
+        </g></svg>` },
+    jupiter: { vb: { w: 200, h: 200 }, svg: `<svg viewBox="0 0 200 200"><defs><clipPath id="sp-jupiter"><circle cx="100" cy="100" r="96"/></clipPath></defs>
         <circle cx="100" cy="100" r="96" fill="#f39a4c"/>
         <g clip-path="url(#sp-jupiter)" fill="none" stroke-linecap="round">
           <path d="M0 40c30-10 60 8 100 0s70-10 100 0" stroke="#f7c95c" stroke-width="12"/>
@@ -74,12 +106,8 @@
           <path d="M10 176c40 6 80-6 180 0" stroke="#f7c95c" stroke-width="8"/>
         </g>
         <ellipse cx="72" cy="126" rx="30" ry="18" fill="#d9302a"/><ellipse cx="78" cy="128" rx="13" ry="9" fill="#8f0f16"/>
-        </svg>`,
-    },
-    {
-      name: "Saturn", distance: "1.28 billion km", diameter: 220,
-      vb: { w: 340, h: 200 }, disc: { cx: 170, cy: 100, r: 80 },
-      svg: `<svg viewBox="0 0 340 200"><defs>
+        </svg>` },
+    saturn: { vb: { w: 340, h: 200 }, svg: `<svg viewBox="0 0 340 200"><defs>
           <clipPath id="sp-saturn-front"><rect x="0" y="100" width="340" height="100"/></clipPath>
           <clipPath id="sp-saturn-disc"><circle cx="170" cy="100" r="80"/></clipPath></defs>
         <g transform="rotate(-14 170 100)">
@@ -87,38 +115,25 @@
           <circle cx="170" cy="100" r="80" fill="#f6c431"/>
           <g clip-path="url(#sp-saturn-disc)" fill="none" stroke="#e8a82a" stroke-width="9" stroke-linecap="round"><path d="M80 62h180M80 134h180"/></g>
           <ellipse cx="170" cy="100" rx="160" ry="34" fill="none" stroke="#b97b55" stroke-width="18" clip-path="url(#sp-saturn-front)"/>
-        </g></svg>`,
-    },
-    {
-      name: "Uranus", distance: "2.72 billion km", diameter: 170,
-      vb: { w: 200, h: 240 }, disc: { cx: 100, cy: 120, r: 80 },
-      svg: `<svg viewBox="0 0 200 240"><defs><clipPath id="sp-uranus-front"><rect x="0" y="0" width="100" height="240"/></clipPath></defs>
+        </g></svg>` },
+    uranus: { vb: { w: 200, h: 240 }, svg: `<svg viewBox="0 0 200 240"><defs><clipPath id="sp-uranus-front"><rect x="0" y="0" width="100" height="240"/></clipPath></defs>
         <g transform="rotate(12 100 120)">
           <ellipse cx="100" cy="120" rx="24" ry="112" fill="none" stroke="#d6f3f7" stroke-width="5"/>
           <circle cx="100" cy="120" r="80" fill="#86d3e3"/>
           <path d="M32 92h136M34 150h132" stroke="#a6e2ee" stroke-width="10" stroke-linecap="round"/>
           <ellipse cx="100" cy="120" rx="24" ry="112" fill="none" stroke="#d6f3f7" stroke-width="5" clip-path="url(#sp-uranus-front)"/>
-        </g></svg>`,
-    },
-    {
-      name: "Neptune", distance: "4.35 billion km", diameter: 165,
-      vb: { w: 200, h: 200 }, disc: { cx: 100, cy: 100, r: 96 },
-      svg: `<svg viewBox="0 0 200 200"><defs><clipPath id="sp-neptune"><circle cx="100" cy="100" r="96"/></clipPath></defs>
+        </g></svg>` },
+    neptune: { vb: { w: 200, h: 200 }, svg: `<svg viewBox="0 0 200 200"><defs><clipPath id="sp-neptune"><circle cx="100" cy="100" r="96"/></clipPath></defs>
         <circle cx="100" cy="100" r="96" fill="#2d6be0"/>
         <g clip-path="url(#sp-neptune)" fill="none" stroke-linecap="round" stroke-width="8">
           <path d="M20 50c30-8 60-6 90-12" stroke="#7aa2f5"/><path d="M40 82c34-6 70-4 120-12" stroke="#4a3fc4"/>
           <path d="M14 124c40-6 90-8 160-4" stroke="#7aa2f5"/><path d="M50 160c30-4 60-4 100-10" stroke="#4a3fc4"/>
         </g>
-        <ellipse cx="130" cy="108" rx="18" ry="10" fill="#183d9e"/></svg>`,
-    },
-    {
-      name: "Pluto", distance: "5.76 billion km", diameter: 72,
-      vb: { w: 200, h: 200 }, disc: { cx: 100, cy: 100, r: 96 },
-      svg: `<svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#c9a07a"/>
+        <ellipse cx="130" cy="108" rx="18" ry="10" fill="#183d9e"/></svg>` },
+    pluto: { vb: { w: 200, h: 200 }, svg: `<svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#c9a07a"/>
         <path d="M112 150C84 132 66 116 66 96c0-14 10-24 22-24 10 0 18 6 24 14 6-8 14-14 24-14 12 0 22 10 22 24 0 20-18 36-46 54z" fill="#f4e2cc"/>
-        <circle cx="48" cy="70" r="10" fill="#a87e5a"/><circle cx="58" cy="142" r="7" fill="#a87e5a"/></svg>`,
-    },
-  ];
+        <circle cx="48" cy="70" r="10" fill="#a87e5a"/><circle cx="58" cy="142" r="7" fill="#a87e5a"/></svg>` },
+  };
 
   function issSvg() {
     const panel = (x, y) => {
@@ -186,21 +201,6 @@
     },
   };
 
-  // Where each object starts: fx = left-to-right within the right margin (0 to 1),
-  // fy = how far down the page (0 = top, 1 = bottom), size = base width in pixels
-  const OBJECTS = [
-    { art: "iss",       size: 210, fx: 0.5,  fy: 0.05 },
-    { art: "star",      size: 52,  fx: 0.75, fy: 0.16 },
-    { art: "astronaut", size: 90,  fx: 0.3,  fy: 0.24 },
-    { art: "sparkle",   size: 40,  fx: 0.15, fy: 0.36 },
-    { art: "satellite", size: 150, fx: 0.55, fy: 0.44 },
-    { art: "sparkle",   size: 58,  fx: 0.85, fy: 0.55 },
-    { art: "ufo",       size: 130, fx: 0.35, fy: 0.63 },
-    { art: "comet",     size: 180, fx: 0.5,  fy: 0.74 },
-    { art: "star",      size: 40,  fx: 0.2,  fy: 0.85 },
-    { art: "sparkle",   size: 46,  fx: 0.7,  fy: 0.93 },
-  ];
-
   const ROCKET_SVG = `<svg class="rocket-ship" viewBox="0 -14 60 144">
     <g class="rocket-flame"><path d="M20 16Q30 -14 40 16Z" fill="#ff8a1e"/><path d="M25 16Q30 -2 35 16Z" fill="#ffe56b"/></g>
     <rect x="21" y="14" width="18" height="10" rx="2" fill="#8a94a0" stroke="${OUTLINE}" stroke-width="2.5"/>
@@ -209,6 +209,11 @@
     <path d="M16 24H44V90Q44 110 30 126Q16 110 16 90Z" fill="#f4f6f8" stroke="${OUTLINE}" stroke-width="2.5" stroke-linejoin="round"/>
     <path d="M16 92Q16 110 30 126Q44 110 44 92Z" fill="#e8453c" stroke="${OUTLINE}" stroke-width="2.5" stroke-linejoin="round"/>
     <circle cx="30" cy="62" r="8" fill="#5fc3e8" stroke="${OUTLINE}" stroke-width="2.5"/></svg>`;
+
+  const GENERIC_PLANET = {
+    vb: { w: 200, h: 200 },
+    svg: `<svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#9aa4ae"/><circle cx="70" cy="70" r="14" fill="#7d8893"/><circle cx="128" cy="130" r="20" fill="#7d8893"/></svg>`,
+  };
 
   // ---------- Build the elements ----------
   const layer = document.createElement("div");
@@ -225,45 +230,106 @@
   trailSvg.append(trailPath);
   layer.append(trailSvg);
 
-  PLANETS.forEach((p) => {
-    p.el = document.createElement("div");
-    p.el.className = "space-planet";
-    p.el.innerHTML = p.svg;
-    layer.append(p.el);
+  // Fills an element with a picture (if set) or a built-in drawing.
+  // Returns a function that gives the artwork's height-to-width ratio.
+  function fillArt(el, image, drawing) {
+    const useDrawing = () => {
+      el.innerHTML = drawing.svg;
+      return () => drawing.vb.h / drawing.vb.w;
+    };
+    if (!has(image)) return useDrawing();
+    const img = document.createElement("img");
+    img.src = image;
+    img.alt = "";
+    img.draggable = false;
+    el.append(img);
+    let ratio = () => (img.naturalWidth ? img.naturalHeight / img.naturalWidth : 1);
+    img.addEventListener("load", scheduleLayout);
+    img.addEventListener("error", () => {
+      reportMissing(image);
+      img.remove();
+      ratio = useDrawing();
+      scheduleLayout();
+    });
+    return () => ratio();
+  }
+
+  const planets = planetList.map((p) => {
+    const el = document.createElement("div");
+    el.className = "space-planet";
+    layer.append(el);
+    const drawing = DRAWN_PLANETS[String(p.name || "").toLowerCase()] || GENERIC_PLANET;
+    return {
+      name: has(p.name) ? p.name : "",
+      distance: has(p.distance) ? p.distance : "",
+      size: num(p.size, 160),
+      gap: Math.max(0, num(p.gap, 1)),
+      el,
+      ratio: fillArt(el, p.image, drawing),
+    };
   });
 
-  OBJECTS.forEach((o) => {
-    o.vb = OBJECT_ART[o.art].vb;
-    o.el = document.createElement("div");
-    o.el.className = "space-object";
-    o.el.innerHTML = OBJECT_ART[o.art].svg;
-    layer.append(o.el);
+  const START_X = [0.5, 0.75, 0.3, 0.15, 0.55, 0.85, 0.35, 0.5, 0.2, 0.7];
+  const objects = objectList.map((o, i) => {
+    const el = document.createElement("div");
+    el.className = "space-object";
+    layer.append(el);
+    const drawing = OBJECT_ART[String(o.drawing || "").toLowerCase()] || OBJECT_ART.star;
+    return {
+      el,
+      size: num(o.size, 80),
+      ratio: fillArt(el, o.image, drawing),
+      fx: START_X[i % START_X.length],
+      fy: (i + 0.5) / objectList.length,
+      angle: 0,
+    };
   });
 
   const rocket = document.createElement("div");
-  rocket.className = "rocket";
+  rocket.className = mirrored ? "rocket rocket--mirrored" : "rocket";
   rocket.setAttribute("aria-hidden", "true");
-  rocket.innerHTML = ROCKET_SVG +
-    `<div class="rocket-label"><span class="rocket-label-name"></span><span class="rocket-label-distance"></span></div>`;
-  const label = rocket.querySelector(".rocket-label");
+  if (has(rocketCfg.image)) {
+    // Pictures of rockets usually point up, so turn it to face the direction of travel
+    rocket.innerHTML = `<img class="rocket-ship" alt="" draggable="false">`;
+    const img = rocket.querySelector("img");
+    img.src = rocketCfg.image;
+    rocket.style.setProperty("--rocket-turn", "180deg");
+    img.addEventListener("load", scheduleLayout);
+    img.addEventListener("error", () => {
+      reportMissing(rocketCfg.image);
+      img.outerHTML = ROCKET_SVG;
+      rocket.style.removeProperty("--rocket-turn");
+      scheduleLayout();
+    });
+  } else {
+    rocket.innerHTML = ROCKET_SVG;
+  }
+  const label = document.createElement("div");
+  label.className = "rocket-label";
+  label.innerHTML = `<span class="rocket-label-name"></span><span class="rocket-label-distance"></span>`;
+  rocket.append(label);
 
   document.body.prepend(layer);
   document.body.append(rocket);
 
   // ---------- Layout: runs on load and whenever the window or page size changes ----------
-  const G = { enabled: false };   // current measurements
+  const G = { enabled: false };
+
+  // Positions are worked out as if the planets were on the left, then flipped if they're on the right
+  const sideX = (x, w = 0) => (mirrored ? G.vw - x - w : x);
 
   function layout() {
     const vw = root.clientWidth;
     const box = main.getBoundingClientRect();
     const gutter = parseFloat(getComputedStyle(main).paddingLeft) || 0;
-    const contentStart = box.left + gutter;
+    const planetMargin = mirrored ? vw - box.right + gutter : box.left + gutter;
 
-    G.enabled = contentStart >= 190;
+    G.enabled = planetMargin >= 190;
     root.classList.toggle("has-space", G.enabled);
     if (!G.enabled) return;
 
     G.vw = vw;
+    G.vh = window.innerHeight;
     G.H = document.body.offsetHeight;
     G.mainLeft = box.left;
     G.mainRight = box.right;
@@ -271,75 +337,203 @@
     trailSvg.setAttribute("width", vw);
     trailSvg.setAttribute("height", G.H);
 
-    // Planets: Earth at the top, then the rest spread out so the rocket (which sits
-    // mid-screen) reaches Mars after a little scrolling and Pluto at the very bottom
-    const scale = clamp(contentStart / 450, 0.55, 1.4);
-    const vh = window.innerHeight;
-    const earthY = 150;
-    const marsY = Math.max(earthY + 260, vh / 2 + 160);
-    const plutoY = Math.max(marsY + 5 * 160, G.H - vh / 2);
-    // On short pages, shrink the planets so they don't overlap (Jupiter is the biggest, 300px)
-    const gap = (plutoY - marsY) / (PLANETS.length - 2);
-    const planetScale = clamp(Math.min(scale, (gap - 30) / 300), 0.35, 1.4);
-    PLANETS.forEach((p, i) => {
-      const s = (p.diameter * planetScale) / (2 * p.disc.r);   // pixels per artwork unit
-      const visibleRight = Math.min(p.disc.r * 2 * s * 0.62, contentStart * 0.42);
-      p.y = i === 0 ? earthY : marsY + ((i - 1) * (plutoY - marsY)) / (PLANETS.length - 2);
-      p.rightEdge = visibleRight;
+    // Planet heights down the page. The first planet sits at the top. The rest are spread
+    // between where the rocket starts (mid-screen) and where it ends (bottom of the page),
+    // with each planet's "gap" deciding how much of that space comes before it.
+    const scale = clamp(planetMargin / 450, 0.5, 1.4);
+    const travelStart = G.vh / 2;
+    const travelEnd = Math.max(G.H - G.vh / 2, travelStart + 200 * Math.max(1, planets.length - 1));
+    const weights = planets.slice(1).map((p) => p.gap);
+    const total = weights.reduce((a, b) => a + b, 0) || 1;
+    let used = 0;
+    planets.forEach((p, i) => {
+      if (i === 0) { p.y = 150; return; }
+      used += p.gap;
+      p.y = travelStart + (used / total) * (travelEnd - travelStart);
+    });
+
+    // Shrink everything a little if neighbors would overlap (skipped for gap: 0, which is on purpose)
+    let fit = 1;
+    planets.forEach((p, i) => {
+      if (i === 0 || p.gap === 0) return;
+      const a = planets[i - 1];
+      const needed = ((a.size * a.ratio() + p.size * p.ratio()) / 2) * scale * 0.85;
+      if (needed > 0) fit = Math.min(fit, (p.y - a.y) / needed);
+    });
+    const planetScale = scale * clamp(fit, 0.3, 1);
+
+    planets.forEach((p) => {
+      const w = p.size * planetScale;
+      const h = w * p.ratio();
+      const visible = Math.min(w * peek, planetMargin * 0.45);
+      p.rightEdge = visible;
       Object.assign(p.el.style, {
-        width: p.vb.w * s + "px",
-        height: p.vb.h * s + "px",
-        left: visibleRight - (p.disc.cx + p.disc.r) * s + "px",
-        top: p.y - p.disc.cy * s + "px",
+        width: w + "px",
+        height: h + "px",
+        left: sideX(visible - w, w) + "px",
+        top: p.y - h / 2 + "px",
       });
     });
 
     // Rocket
-    const rw = clamp(56 * scale, 40, 84);
-    G.rocketX = contentStart * 0.66;
-    rocket.style.left = G.rocketX - rw / 2 + "px";
+    const baseSize = num(rocketCfg.size, 56);
+    const rw = clamp(baseSize * scale, 28, baseSize * 1.5);
+    G.rocketX = planetMargin * 0.66;
+    rocket.style.left = sideX(G.rocketX - rw / 2, rw) + "px";
     const ship = rocket.querySelector(".rocket-ship");
     ship.style.width = rw + "px";
-    ship.style.height = (rw * 144) / 60 + "px";
-    const roomForLabel = contentStart - (G.rocketX + rw / 2) > 200;
-    rocket.classList.toggle("rocket--label-right", roomForLabel);
+    ship.style.height = ship.tagName === "IMG" ? "auto" : (rw * 144) / 60 + "px";
+    const roomForLabel = planetMargin - (G.rocketX + rw / 2) > 200;
+    rocket.classList.toggle("rocket--label-side", roomForLabel);
     rocket.classList.toggle("rocket--label-below", !roomForLabel);
 
-    // Draggable objects in the right margin
-    const rightMargin = vw - G.mainRight;
-    const os = clamp(rightMargin / 320, 0.45, 1.3);
-    OBJECTS.forEach((o) => {
-      o.w = Math.max(24, Math.min(o.size * os, rightMargin - 24));
-      o.h = (o.w * o.vb.h) / o.vb.w;
-      placeObject(o);
+    // Draggable objects on the other side
+    const objectMargin = mirrored ? box.left : vw - box.right;
+    const os = clamp(objectMargin / 320, 0.45, 1.3);
+    objects.forEach((o) => {
+      o.w = Math.max(24, Math.min(o.size * os, objectMargin - 24));
+      o.h = o.w * o.ratio();
+      if (!o.flying && !o.dragging) placeFromFractions(o);
     });
 
     drawBackdrop(planetScale);
     update();
   }
 
-  function objectBounds(o) {
-    const minX = G.mainRight + 8;
-    const maxX = Math.max(minX, G.vw - o.w - 8);
+  // ---------- Objects: positions, dragging, and flicking ----------
+  function bounds(o) {
+    const minX = mirrored ? 8 : G.mainRight + 8;
+    const maxX = Math.max(minX, mirrored ? G.mainLeft - o.w - 8 : G.vw - o.w - 8);
     return { minX, maxX, minY: 80, maxY: Math.max(80, G.H - o.h - 10) };
   }
 
-  function placeObject(o) {
-    const b = objectBounds(o);
-    Object.assign(o.el.style, {
-      width: o.w + "px",
-      height: o.h + "px",
-      left: b.minX + o.fx * (b.maxX - b.minX) + "px",
-      top: clamp(o.fy * G.H, b.minY, b.maxY) + "px",
-    });
+  // While flying, objects bounce off the top and bottom of the screen too
+  function flightBounds(o) {
+    const b = bounds(o);
+    const top = window.scrollY + 70;
+    const bottom = window.scrollY + G.vh - o.h - 10;
+    return { ...b, minY: Math.max(b.minY, top), maxY: Math.max(Math.max(b.minY, top), Math.min(b.maxY, bottom)) };
   }
 
-  // Background stars, plus an asteroid belt between Mars and Jupiter
+  function render(o) {
+    o.el.style.width = o.w + "px";
+    o.el.style.height = o.h + "px";
+    o.el.style.left = o.x + "px";
+    o.el.style.top = o.y + "px";
+    o.el.style.setProperty("--angle", o.angle.toFixed(1) + "deg");
+  }
+
+  function placeFromFractions(o) {
+    const b = bounds(o);
+    o.x = b.minX + o.fx * (b.maxX - b.minX);
+    o.y = clamp(o.fy * G.H, b.minY, b.maxY);
+    render(o);
+  }
+
+  function saveFractions(o) {
+    const b = bounds(o);
+    o.fx = b.maxX > b.minX ? clamp((o.x - b.minX) / (b.maxX - b.minX), 0, 1) : 0;
+    o.fy = o.y / G.H;
+  }
+
+  function stopFlying(o) {
+    if (o.raf) cancelAnimationFrame(o.raf);
+    o.raf = 0;
+    o.flying = false;
+    o.el.classList.remove("is-flying");
+  }
+
+  function fling(o, vx, vy) {
+    if (reduceMotion) return;
+    const speed = Math.hypot(vx, vy);           // pixels per millisecond
+    if (speed < 0.2) return;
+    const maxSpeed = 3;
+    if (speed > maxSpeed) { vx *= maxSpeed / speed; vy *= maxSpeed / speed; }
+
+    o.vx = vx;
+    o.vy = vy;
+    o.spin = vx * 0.25;                          // degrees per millisecond
+    o.flying = true;
+    o.el.classList.add("is-flying");
+    let last = performance.now();
+
+    const step = (now) => {
+      const dt = Math.min(32, now - last);
+      last = now;
+      o.x += o.vx * dt;
+      o.y += o.vy * dt;
+      o.angle += o.spin * dt;
+
+      const b = flightBounds(o);
+      if (o.x < b.minX) { o.x = b.minX; o.vx = Math.abs(o.vx) * 0.8; o.spin *= -0.8; }
+      if (o.x > b.maxX) { o.x = b.maxX; o.vx = -Math.abs(o.vx) * 0.8; o.spin *= -0.8; }
+      if (o.y < b.minY) { o.y = b.minY; o.vy = Math.abs(o.vy) * 0.8; }
+      if (o.y > b.maxY) { o.y = b.maxY; o.vy = -Math.abs(o.vy) * 0.8; }
+
+      // Slow down smoothly: after about a second it's barely moving
+      const drag = Math.exp(-dt / 200);
+      o.vx *= drag;
+      o.vy *= drag;
+      o.spin *= drag;
+      render(o);
+
+      if (Math.hypot(o.vx, o.vy) > 0.02) {
+        o.raf = requestAnimationFrame(step);
+      } else {
+        stopFlying(o);
+        saveFractions(o);
+      }
+    };
+    o.raf = requestAnimationFrame(step);
+  }
+
+  objects.forEach((o) => {
+    let grab = null;
+    let samples = [];
+
+    o.el.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      stopFlying(o);
+      o.el.setPointerCapture(e.pointerId);
+      grab = { dx: e.clientX + window.scrollX - o.x, dy: e.clientY + window.scrollY - o.y };
+      samples = [{ t: e.timeStamp, x: o.x, y: o.y }];
+      o.dragging = true;
+      o.el.classList.add("is-dragging");
+    });
+
+    o.el.addEventListener("pointermove", (e) => {
+      if (!grab) return;
+      const b = bounds(o);
+      o.x = clamp(e.clientX + window.scrollX - grab.dx, b.minX, b.maxX);
+      o.y = clamp(e.clientY + window.scrollY - grab.dy, b.minY, b.maxY);
+      render(o);
+      samples.push({ t: e.timeStamp, x: o.x, y: o.y });
+      if (samples.length > 8) samples.shift();
+    });
+
+    const release = (e) => {
+      if (!grab) return;
+      grab = null;
+      o.dragging = false;
+      o.el.classList.remove("is-dragging");
+      saveFractions(o);
+
+      // How fast was it moving over the last ~100ms before letting go?
+      const lastSample = samples[samples.length - 1];
+      const recent = samples.filter((s) => lastSample.t - s.t <= 100);
+      const first = recent[0];
+      const held = e.timeStamp - lastSample.t > 80;   // paused before letting go = no flick
+      const dt = lastSample.t - first.t;
+      if (!held && dt > 0) fling(o, (lastSample.x - first.x) / dt, (lastSample.y - first.y) / dt);
+    };
+    o.el.addEventListener("pointerup", release);
+    o.el.addEventListener("pointercancel", release);
+  });
+
+  // ---------- Background stars, plus an asteroid belt between Mars and Jupiter ----------
   function drawBackdrop(scale) {
     const rand = seeded(7);
-    const leftEnd = G.mainLeft - 6;
-    const rightStart = G.mainRight + 6;
-    const strips = [[0, leftEnd], [rightStart, G.vw]].filter(([a, b]) => b - a > 20);
+    const strips = [[0, G.mainLeft - 6], [G.mainRight + 6, G.vw]].filter(([a, b]) => b - a > 20);
     let shapes = "";
 
     strips.forEach(([a, b]) => {
@@ -351,20 +545,25 @@
       }
     });
 
-    const beltY = (PLANETS[1].y + PLANETS[2].y) / 2;
-    const beltH = 120 * scale;
-    const rocks = ["#b97b55", "#a86a45", "#c98d66"];
-    strips.forEach(([a, b]) => {
-      const count = Math.round((b - a) / 9);
-      for (let i = 0; i < count; i++) {
-        const rx = 3 + rand() * 14 * scale;
-        const ry = rx * (0.45 + rand() * 0.5);
-        const x = a + rx + rand() * (b - a - rx * 2);
-        const y = beltY - beltH / 2 + rand() * beltH;
-        const color = rocks[Math.floor(rand() * rocks.length)];
-        shapes += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" transform="rotate(${Math.round(rand() * 60 - 30)} ${x.toFixed(1)} ${y.toFixed(1)})" fill="${color}"/>`;
-      }
-    });
+    const find = (n) => planets.find((p) => p.name.toLowerCase() === n);
+    const mars = find("mars");
+    const jupiter = find("jupiter");
+    if (mars && jupiter) {
+      const beltY = (mars.y + jupiter.y) / 2;
+      const beltH = 120 * scale;
+      const rocks = ["#b97b55", "#a86a45", "#c98d66"];
+      strips.forEach(([a, b]) => {
+        const count = Math.round((b - a) / 9);
+        for (let i = 0; i < count; i++) {
+          const rx = 3 + rand() * 14 * scale;
+          const ry = rx * (0.45 + rand() * 0.5);
+          const x = a + rx + rand() * (b - a - rx * 2);
+          const y = beltY - beltH / 2 + rand() * beltH;
+          const color = rocks[Math.floor(rand() * rocks.length)];
+          shapes += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" transform="rotate(${Math.round(rand() * 60 - 30)} ${x.toFixed(1)} ${y.toFixed(1)})" fill="${color}"/>`;
+        }
+      });
+    }
 
     backdrop.innerHTML = `<svg width="${G.vw}" height="${G.H}">${shapes}</svg>`;
   }
@@ -376,27 +575,30 @@
 
   function update() {
     if (!G.enabled) return;
-    const rocketY = window.scrollY + window.innerHeight / 2;   // rocket's position on the page
+    const rocketY = window.scrollY + G.vh / 2;   // rocket's position on the page
 
-    // Dashed trail: leaves Earth sideways, curves down, then follows the rocket
-    const earth = PLANETS[0];
-    const ex = earth.rightEdge + 6;
-    const ey = earth.y;
+    // Dashed trail: leaves the first planet sideways, curves down, then follows the rocket
+    const start = planets[0];
+    const ex = start.rightEdge + 6;
+    const ey = start.y;
     const rx = G.rocketX;
     const turn = Math.max(0, rx - ex);
     const endY = Math.max(rocketY, ey + turn);
+    const X = (x) => (mirrored ? G.vw - x : x);
     trailPath.setAttribute("d", turn > 10
-      ? `M${ex} ${ey}Q${rx} ${ey} ${rx} ${ey + turn}L${rx} ${endY}`
-      : `M${rx} ${ey}L${rx} ${endY}`);
+      ? `M${X(ex)} ${ey}Q${X(rx)} ${ey} ${X(rx)} ${ey + turn}L${X(rx)} ${endY}`
+      : `M${X(rx)} ${ey}L${X(rx)} ${endY}`);
 
     // The last planet the rocket has passed
     let passed = 0;
-    PLANETS.forEach((p, i) => { if (rocketY >= p.y) passed = i; });
+    planets.forEach((p, i) => { if (rocketY >= p.y) passed = i; });
     if (passed !== currentPlanet) {
       currentPlanet = passed;
-      const p = PLANETS[passed];
-      label.querySelector(".rocket-label-name").textContent = passed === 0 ? "Leaving Earth" : `Passing ${p.name}`;
+      const p = planets[passed];
+      label.querySelector(".rocket-label-name").textContent =
+        p.name ? (passed === 0 ? `Leaving ${p.name}` : `Passing ${p.name}`) : "";
       label.querySelector(".rocket-label-distance").textContent = p.distance;
+      label.hidden = !p.name && !p.distance;
       label.classList.remove("is-new");
       void label.offsetWidth;   // restart the pop-in animation
       label.classList.add("is-new");
@@ -416,40 +618,13 @@
     if (!frame) frame = requestAnimationFrame(() => { frame = 0; update(); });
   }, { passive: true });
 
-  let layoutFrame = 0;
-  const scheduleLayout = () => {
+  var layoutFrame = 0;
+  function scheduleLayout() {
     if (!layoutFrame) layoutFrame = requestAnimationFrame(() => { layoutFrame = 0; layout(); });
-  };
+  }
   window.addEventListener("resize", scheduleLayout);
   window.addEventListener("load", scheduleLayout);
   if ("ResizeObserver" in window) new ResizeObserver(scheduleLayout).observe(document.body);
-
-  // ---------- Dragging objects (mouse, pen, or finger) ----------
-  let drag = null;
-  OBJECTS.forEach((o) => {
-    o.el.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      o.el.setPointerCapture(e.pointerId);
-      const r = o.el.getBoundingClientRect();
-      drag = { o, dx: e.clientX - r.left, dy: e.clientY - r.top };
-      o.el.classList.add("is-dragging");
-    });
-    o.el.addEventListener("pointermove", (e) => {
-      if (!drag || drag.o !== o) return;
-      const b = objectBounds(o);
-      const x = clamp(e.clientX - drag.dx, b.minX, b.maxX);
-      const y = clamp(e.clientY - drag.dy + window.scrollY, b.minY, b.maxY);
-      o.fx = b.maxX > b.minX ? (x - b.minX) / (b.maxX - b.minX) : 0;
-      o.fy = y / G.H;
-      placeObject(o);
-    });
-    const drop = () => {
-      if (drag && drag.o === o) drag = null;
-      o.el.classList.remove("is-dragging");
-    };
-    o.el.addEventListener("pointerup", drop);
-    o.el.addEventListener("pointercancel", drop);
-  });
 
   layout();
 })();
