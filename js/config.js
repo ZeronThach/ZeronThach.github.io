@@ -119,14 +119,14 @@ const SITE = {
     //   size:    width in pixels on a large screen
     objects: [
       { drawing: "iss",       image: "", size: 210 },
-      { drawing: "star",      image: "", size: 52 },
+      { drawing: "sparkle",   image: "", size: 52 },
       { drawing: "astronaut", image: "", size: 90 },
       { drawing: "sparkle",   image: "", size: 40 },
       { drawing: "satellite", image: "", size: 150 },
       { drawing: "sparkle",   image: "", size: 58 },
       { drawing: "ufo",       image: "", size: 130 },
       { drawing: "comet",     image: "", size: 180 },
-      { drawing: "star",      image: "", size: 40 },
+      { drawing: "sparkle",   image: "", size: 40 },
       { drawing: "sparkle",   image: "", size: 46 },
     ],
   },
