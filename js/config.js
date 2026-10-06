@@ -104,10 +104,10 @@ const SITE = {
     //             1 = normal, 2 = twice as far, 0.5 = half as far. The first planet is always at the top.
     //   distance: the text shown next to the rocket as it passes
     planets: [
-      { name: "Earth",   distance: "Liftoff",         image: "", size: 170, gap: 1 },
+      { name: "Earth",   distance: "Liftoff",         image: "", size: 150, gap: 1 },
       { name: "Mars",    distance: "78 million km",   image: "", size: 120, gap: 3 },
       { name: "Jupiter", distance: "629 million km",  image: "", size: 300, gap: 5 },
-      { name: "Saturn",  distance: "1.28 billion km", image: "", size: 440, gap: 4 },
+      { name: "Saturn",  distance: "1.28 billion km", image: "", size: 400, gap: 4 },
       { name: "Uranus",  distance: "2.72 billion km", image: "", size: 190, gap: 3 },
       { name: "Neptune", distance: "4.35 billion km", image: "", size: 170, gap: 3 },
       { name: "Pluto",   distance: "5.76 billion km", image: "", size: 75,  gap: 3 },
