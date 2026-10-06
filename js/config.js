@@ -19,7 +19,7 @@ const SITE = {
   // ---------- About you ----------
   name: "Zeron Thach",
   role: "",   // shown in the browser tab
-  intro: "One or two sentences about what you build and what kind of role you're looking for.",
+  intro: " Introduction",
 
   // Your email. It's used for the contact button. Leave "" to hide the contact section.
   email: "Email: ZeronThach04.com",
@@ -42,7 +42,7 @@ const SITE = {
   projects: [
     {
       name: "Example Project",
-      description: "What problem does it solve, and for whom? Then say what you built and the most interesting thing you figured out along the way.",
+      description: "description.",
       tech: ["Python", "Flask", "PostgreSQL"],
       image: "",
       imageAlt: "Screenshot of Example Project",
