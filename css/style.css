@@ -12,6 +12,9 @@
   --line: #d9dee3;
   --accent: #1f6f5c;       /* deep pine green */
   --accent-soft: #e2efe9;
+  --space-trail: #18212b;   /* rocket's dashed trail */
+  --space-label: #c2185b;   /* distance label next to the rocket */
+  --space-dot: rgba(24, 33, 43, 0.22);   /* tiny background stars */
 
   --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --font-body: "Public Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
@@ -36,6 +39,9 @@
     --line: #2b3440;
     --accent: #63c4a8;
     --accent-soft: #1d3530;
+    --space-trail: #ffffff;
+    --space-label: #ff9ec7;
+    --space-dot: rgba(255, 255, 255, 0.5);
     color-scheme: dark;
   }
 }
@@ -47,6 +53,9 @@
   --line: #2b3440;
   --accent: #63c4a8;
   --accent-soft: #1d3530;
+  --space-trail: #ffffff;
+  --space-label: #ff9ec7;
+  --space-dot: rgba(255, 255, 255, 0.5);
   color-scheme: dark;
 }
 
@@ -447,6 +456,93 @@ main {
 }
 
 /* =========================================================
+   Space background (turned on with spaceBackground in config.js)
+   ========================================================= */
+main, .site-footer { position: relative; z-index: 1; }
+
+.space, .rocket { display: none; }
+:root.has-space .space, :root.has-space .rocket { display: block; }
+
+.space {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+.space svg { display: block; }
+.space-backdrop, .space-trail, .space-planet, .space-object { position: absolute; top: 0; left: 0; }
+.space-planet svg, .space-object svg { width: 100%; height: 100%; }
+
+.space-trail path {
+  fill: none;
+  stroke: var(--space-trail);
+  stroke-width: 4;
+  stroke-dasharray: 14 12;
+  stroke-linecap: round;
+}
+
+/* Objects visitors can drag around */
+.space-object {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+.space-object:hover { transform: scale(1.04); }
+.space-object.is-dragging {
+  cursor: grabbing;
+  z-index: 2;
+  transform: scale(1.1) rotate(-6deg);
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.35));
+}
+
+/* The rocket stays in the middle of the screen while the page scrolls */
+.rocket {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  z-index: 3;
+  pointer-events: none;
+  translate: 0 -50%;
+}
+.rocket-ship { display: block; transition: transform 0.35s ease; }
+.rocket.is-up .rocket-ship { transform: rotate(180deg); }
+
+.rocket-flame { transform-box: view-box; transform-origin: 30px 16px; transform: scaleY(0.55); }
+.rocket.is-moving .rocket-flame { animation: flame-flicker 0.12s steps(2) infinite alternate; }
+@keyframes flame-flicker {
+  from { transform: scaleY(1); }
+  to   { transform: scaleY(1.5); }
+}
+
+.rocket-label {
+  position: absolute;
+  white-space: nowrap;
+  color: var(--space-label);
+  font-family: var(--font-display);
+  line-height: 1.15;
+}
+.rocket-label-name { display: block; font-family: var(--font-body); font-size: 0.85rem; color: var(--muted); }
+.rocket-label-distance { display: block; font-size: 1.3rem; font-weight: 700; }
+.rocket--label-right .rocket-label { left: calc(100% + 14px); top: 50%; translate: 0 -50%; }
+.rocket--label-below .rocket-label { top: calc(100% + 10px); left: 50%; translate: -50% 0; text-align: center; }
+.rocket--label-below .rocket-label-distance { font-size: 1rem; }
+.rocket-label.is-new { animation: label-pop 0.35s ease-out; }
+@keyframes label-pop {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media print {
+  :root.has-space .space, :root.has-space .rocket { display: none; }
+}
+
+/* =========================================================
    Responsive
    ========================================================= */
 @media (max-width: 720px) {
@@ -467,4 +563,6 @@ main {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .card-img { transition: none; }
+  .rocket-ship, .space-object { transition: none; }
+  .rocket.is-moving .rocket-flame, .rocket-label.is-new { animation: none; }
 }
