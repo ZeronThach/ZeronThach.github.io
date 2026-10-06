@@ -474,7 +474,8 @@ main, .site-footer { position: relative; z-index: 1; }
 }
 .space svg { display: block; }
 .space-backdrop, .space-trail, .space-planet, .space-object { position: absolute; top: 0; left: 0; }
-.space-planet svg, .space-object svg { width: 100%; height: 100%; }
+.space-planet svg, .space-object svg,
+.space-planet img, .space-object img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
 .space-trail path {
   fill: none;
@@ -491,15 +492,18 @@ main, .site-footer { position: relative; z-index: 1; }
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
+  transform: rotate(var(--angle, 0deg));
   transition: transform 0.15s ease, filter 0.15s ease;
 }
-.space-object:hover { transform: scale(1.04); }
+.space-object:hover { transform: rotate(var(--angle, 0deg)) scale(1.04); }
 .space-object.is-dragging {
   cursor: grabbing;
   z-index: 2;
-  transform: scale(1.1) rotate(-6deg);
+  transform: rotate(var(--angle, 0deg)) scale(1.1);
   filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.35));
 }
+/* While coasting after a flick, the angle changes every frame, so no smoothing */
+.space-object.is-flying { transition: filter 0.15s ease; z-index: 2; }
 
 /* The rocket stays in the middle of the screen while the page scrolls */
 .rocket {
@@ -510,8 +514,8 @@ main, .site-footer { position: relative; z-index: 1; }
   pointer-events: none;
   translate: 0 -50%;
 }
-.rocket-ship { display: block; transition: transform 0.35s ease; }
-.rocket.is-up .rocket-ship { transform: rotate(180deg); }
+.rocket-ship { display: block; transform: rotate(var(--rocket-turn, 0deg)); transition: transform 0.35s ease; }
+.rocket.is-up .rocket-ship { transform: rotate(calc(var(--rocket-turn, 0deg) + 180deg)); }
 
 .rocket-flame { transform-box: view-box; transform-origin: 30px 16px; transform: scaleY(0.55); }
 .rocket.is-moving .rocket-flame { animation: flame-flicker 0.12s steps(2) infinite alternate; }
@@ -529,7 +533,8 @@ main, .site-footer { position: relative; z-index: 1; }
 }
 .rocket-label-name { display: block; font-family: var(--font-body); font-size: 0.85rem; color: var(--muted); }
 .rocket-label-distance { display: block; font-size: 1.3rem; font-weight: 700; }
-.rocket--label-right .rocket-label { left: calc(100% + 14px); top: 50%; translate: 0 -50%; }
+.rocket--label-side .rocket-label { left: calc(100% + 14px); top: 50%; translate: 0 -50%; }
+.rocket--mirrored.rocket--label-side .rocket-label { left: auto; right: calc(100% + 14px); text-align: right; }
 .rocket--label-below .rocket-label { top: calc(100% + 10px); left: 50%; translate: -50% 0; text-align: center; }
 .rocket--label-below .rocket-label-distance { font-size: 1rem; }
 .rocket-label.is-new { animation: label-pop 0.35s ease-out; }
