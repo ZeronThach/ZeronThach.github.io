@@ -1,0 +1,342 @@
+/* =========================================================
+   Want different colors or fonts? Change them here.
+   Colors are hex codes: search "color picker" to find new ones.
+   The first block is light mode; the two below it are dark mode
+   (keep those two blocks identical to each other).
+   ========================================================= */
+:root {
+  --bg: #f6f7f5;
+  --surface: #ffffff;
+  --ink: #18212b;
+  --muted: #5b6672;
+  --line: #d9dee3;
+  --accent: #1f6f5c;       /* deep pine green */
+  --accent-soft: #e2efe9;
+
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Public Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  --measure: 68ch;          /* max line length for text */
+  --page: 64rem;            /* max page width */
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+  --space: 1.5rem;
+  --radius-sm: 4px;
+  --radius-lg: 10px;
+
+  color-scheme: light;
+}
+
+/* Dark theme: follows the OS unless the visitor picked light */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121820;
+    --surface: #1a222c;
+    --ink: #e6eaee;
+    --muted: #9aa5b1;
+    --line: #2b3440;
+    --accent: #63c4a8;
+    --accent-soft: #1d3530;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121820;
+  --surface: #1a222c;
+  --ink: #e6eaee;
+  --muted: #9aa5b1;
+  --line: #2b3440;
+  --accent: #63c4a8;
+  --accent-soft: #1d3530;
+  color-scheme: dark;
+}
+
+/* =========================================================
+   Base
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  line-height: 1.1;
+  margin: 0;
+}
+h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 2rem; }
+h3 { font-size: 1.35rem; font-weight: 500; margin-bottom: 0.5rem; }
+
+p { margin: 0 0 1rem; max-width: var(--measure); }
+
+a { color: var(--accent); text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+
+img { max-width: 100%; display: block; }
+
+[hidden] { display: none !important; }
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 0.5rem 1rem;
+  z-index: 10;
+}
+.skip-link:focus { top: 1rem; }
+
+/* Shown only when js/config.js has a typo */
+.error-banner {
+  margin: 0;
+  padding: 1rem var(--gutter);
+  background: #b3261e;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.noscript { padding: 4rem 0; }
+
+/* =========================================================
+   Header / nav
+   ========================================================= */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 0.85rem var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-home {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--ink);
+  text-decoration: none;
+  margin-right: auto;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-links a { color: var(--ink); text-decoration: none; font-size: 0.95rem; }
+.nav-links a:hover { color: var(--accent); }
+
+.theme-toggle {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+/* Half-filled circle icon */
+.theme-toggle-icon {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: linear-gradient(90deg, var(--ink) 50%, transparent 50%);
+}
+
+/* =========================================================
+   Layout
+   ========================================================= */
+main {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.section {
+  padding: 4.5rem 0;
+  border-top: 1px solid var(--line);
+}
+
+/* =========================================================
+   Hero — the one bold moment on the page
+   ========================================================= */
+.hero { padding: clamp(4rem, 12vw, 8rem) 0 4.5rem; }
+
+.hero-name {
+  font-size: clamp(3.5rem, 13vw, 8.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  margin-bottom: 2rem;
+}
+
+.hero-intro {
+  font-size: clamp(1.15rem, 2.2vw, 1.4rem);
+  color: var(--muted);
+  max-width: 44ch;
+  margin-bottom: 2rem;
+}
+
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-weight: 600;
+}
+
+/* =========================================================
+   Projects
+   ========================================================= */
+.project {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.project:last-child { border-bottom: none; }
+
+.project--featured {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+  padding-top: 0;
+}
+.project--featured h3 { font-size: 1.75rem; }
+
+.project-media {
+  aspect-ratio: 16 / 10;
+  background: var(--accent-soft);
+  border-radius: var(--radius-lg);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  overflow: hidden;
+}
+.project-media img { width: 100%; height: 100%; object-fit: cover; }
+
+.project-thumb {
+  width: 100%;
+  max-width: 28rem;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.25rem;
+}
+
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+.tech li {
+  font-size: 0.85rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+.project-links { display: flex; gap: 1.25rem; font-weight: 600; margin: 0; }
+
+/* =========================================================
+   Experience timeline
+   ========================================================= */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 1.5rem;
+  border-left: 2px solid var(--line);
+}
+
+.timeline-item { position: relative; padding-bottom: 2.5rem; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: calc(-1.5rem - 8px);
+  top: 0.3rem;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+}
+
+.timeline-date { color: var(--muted); font-size: 0.95rem; margin-bottom: 0.25rem; }
+
+/* =========================================================
+   Contact + footer
+   ========================================================= */
+.button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.button:hover { filter: brightness(1.1); }
+
+.site-footer {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 2rem var(--gutter) 3rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+@media (max-width: 720px) {
+  .nav { gap: 1rem; }
+  .nav-links { gap: 0.9rem; }
+  .nav-links a { font-size: 0.9rem; }
+  .project--featured { grid-template-columns: 1fr; gap: 1.5rem; }
+  .section { padding: 3.5rem 0; }
+}
+
+@media (max-width: 460px) {
+  /* Hide the initials so the links fit on small phones */
+  .nav-home { display: none; }
+  .nav-links { margin-right: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
