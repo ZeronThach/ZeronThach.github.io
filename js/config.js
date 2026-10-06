@@ -22,11 +22,12 @@ const SITE = {
   intro: "One or two sentences about what you build and what kind of role you're looking for.",
 
   // Your email. It's used for the contact button. Leave "" to hide the contact section.
-  email: "ZeronThach04.com",
+  email: "Email: ZeronThach04.com",
 
   // Links shown under your name. Add or remove lines as you like.
   links: [
     { label: "LinkedIn", url: "https://www.linkedin.com/in/zeron-t-383598283/" },
+    { label: "Email", url: "mailto:ZeronThach04.com" }
   ],
 
   // Upload your resume to the assets folder and put its file name here,
