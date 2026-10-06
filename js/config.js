@@ -117,16 +117,16 @@ const SITE = {
     //            "satellite", "ufo", "comet", "star", "sparkle"
     //   size:    width in pixels on a large screen
     objects: [
-      { drawing: "iss",       image: "", size: 210, roam: true, speed: 1, coast: 2 },
-      { drawing: "sparkle",   image: "", size: 52, roam: true, speed: 1, coast: 2 },
-      { drawing: "astronaut", image: "", size: 90, roam: true, speed: 1, coast: 2 },
-      { drawing: "sparkle",   image: "", size: 40, roam: true, speed: 1, coast: 2 },
-      { drawing: "satellite", image: "", size: 150, roam: true, speed: 1, coast: 2 },
-      { drawing: "sparkle",   image: "", size: 58, roam: true, speed: 1, coast: 2 },
-      { drawing: "ufo",       image: "", size: 130, roam: true, speed: 1, coast: 2 },
-      { drawing: "comet",     image: "", size: 180, roam: true, speed: 3, coast: 10},
-      { drawing: "sparkle",   image: "", size: 40, roam: true, speed: 1, coast: 2 },
-      { drawing: "sparkle",   image: "", size: 46, roam: true, speed: 1, coast: 2 },
+      { drawing: "iss",       image: "", size: 210, roam: false, speed: 0.7, coast: 1 },
+      { drawing: "sparkle",   image: "", size: 52, roam: false, speed: 0.7, coast: 1 },
+      { drawing: "astronaut", image: "", size: 90, roam: false, speed: 0.7, coast: 1 },
+      { drawing: "sparkle",   image: "", size: 40, roam: false, speed: 0.7, coast: 1 },
+      { drawing: "satellite", image: "", size: 150, roam: false, speed: 0.7, coast: 1 },
+      { drawing: "sparkle",   image: "", size: 58, roam: false, speed: 0.7, coast: 1 },
+      { drawing: "ufo",       image: "", size: 130, roam: false, speed: 0.7, coast: 1 },
+      { drawing: "comet",     image: "", size: 180, roam: true, speed: 3, coast: 5},
+      { drawing: "sparkle",   image: "", size: 40, roam: false, speed: 0.7, coast: 1 },
+      { drawing: "sparkle",   image: "", size: 46, roam: false, speed: 0.7, coast: 1 },
     ],
   },
 
