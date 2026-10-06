@@ -4,7 +4,7 @@
 
   What it draws when the space background is on:
   - planets down one side of the page
-  - a rocket that stays mid-screen as you scroll, leaving a dashed trail
+  - a rocket that travels down the screen as you scroll, leaving a dashed trail
     and showing its distance from Earth each time it passes a planet
   - space objects on the other side that visitors can drag and flick
   It only appears when the screen is wide enough to fit beside your content.
@@ -337,17 +337,39 @@
     trailSvg.setAttribute("width", vw);
     trailSvg.setAttribute("height", G.H);
 
-    // Planet heights down the page. The first planet sits at the top. The rest are spread
-    // between where the rocket starts (mid-screen) and where it ends (bottom of the page),
-    // with each planet's "gap" deciding how much of that space comes before it.
     const scale = clamp(planetMargin / 450, 0.5, 1.4);
-    const travelStart = G.vh / 2;
-    const travelEnd = Math.max(G.H - G.vh / 2, travelStart + 200 * Math.max(1, planets.length - 1));
+
+    // Rocket size and side position
+    const baseSize = num(rocketCfg.size, 56);
+    const rw = clamp(baseSize * scale, 28, baseSize * 1.5);
+    G.rocketX = planetMargin * 0.66;
+    rocket.style.left = sideX(G.rocketX - rw / 2, rw) + "px";
+    const ship = rocket.querySelector(".rocket-ship");
+    ship.style.width = rw + "px";
+    ship.style.height = ship.tagName === "IMG" ? "auto" : (rw * 144) / 60 + "px";
+    const rh = ship.getBoundingClientRect().height || rw * 2.4;
+    const roomForLabel = planetMargin - (G.rocketX + rw / 2) > 200;
+    rocket.classList.toggle("rocket--label-side", roomForLabel);
+    rocket.classList.toggle("rocket--label-below", !roomForLabel);
+
+    // The rocket moves down the screen as you scroll down the page: beside the first
+    // planet at the top, mid-screen halfway down, and at the bottom of the screen at the end.
+    const firstY = 150;
+    const header = document.querySelector(".site-header");
+    const headerH = header ? header.offsetHeight : 64;
+    G.rocketTop = Math.max(firstY, headerH + rh / 2 + 10);                 // on screen, at the top of the page
+    G.rocketBottom = Math.max(G.rocketTop, G.vh - rh / 2 - (roomForLabel ? 24 : 64));   // at the bottom
+    G.maxScroll = Math.max(0, G.H - G.vh);
+
+    // Planet heights down the page. The first planet sits at the top. The rest are spread
+    // along the rocket's path, with each planet's "gap" deciding how much space comes before it.
+    const travelStart = G.rocketTop;
+    const travelEnd = Math.max(G.maxScroll + G.rocketBottom, travelStart + 200 * Math.max(1, planets.length - 1));
     const weights = planets.slice(1).map((p) => p.gap);
     const total = weights.reduce((a, b) => a + b, 0) || 1;
     let used = 0;
     planets.forEach((p, i) => {
-      if (i === 0) { p.y = 150; return; }
+      if (i === 0) { p.y = firstY; return; }
       used += p.gap;
       p.y = travelStart + (used / total) * (travelEnd - travelStart);
     });
@@ -374,18 +396,6 @@
         top: p.y - h / 2 + "px",
       });
     });
-
-    // Rocket
-    const baseSize = num(rocketCfg.size, 56);
-    const rw = clamp(baseSize * scale, 28, baseSize * 1.5);
-    G.rocketX = planetMargin * 0.66;
-    rocket.style.left = sideX(G.rocketX - rw / 2, rw) + "px";
-    const ship = rocket.querySelector(".rocket-ship");
-    ship.style.width = rw + "px";
-    ship.style.height = ship.tagName === "IMG" ? "auto" : (rw * 144) / 60 + "px";
-    const roomForLabel = planetMargin - (G.rocketX + rw / 2) > 200;
-    rocket.classList.toggle("rocket--label-side", roomForLabel);
-    rocket.classList.toggle("rocket--label-below", !roomForLabel);
 
     // Draggable objects on the other side
     const objectMargin = mirrored ? box.left : vw - box.right;
@@ -575,7 +585,11 @@
 
   function update() {
     if (!G.enabled) return;
-    const rocketY = window.scrollY + G.vh / 2;   // rocket's position on the page
+    // How far down the page you are, from 0 (top) to 1 (bottom)
+    const progress = G.maxScroll > 0 ? clamp(window.scrollY / G.maxScroll, 0, 1) : 0;
+    const onScreenY = G.rocketTop + progress * (G.rocketBottom - G.rocketTop);
+    rocket.style.top = onScreenY + "px";
+    const rocketY = window.scrollY + onScreenY;   // rocket's position on the page
 
     // Dashed trail: leaves the first planet sideways, curves down, then follows the rocket
     const start = planets[0];
@@ -583,11 +597,11 @@
     const ey = start.y;
     const rx = G.rocketX;
     const turn = Math.max(0, rx - ex);
-    const endY = Math.max(rocketY, ey + turn);
     const X = (x) => (mirrored ? G.vw - x : x);
+    const curveEnd = Math.max(ey, Math.min(ey + turn, rocketY));
     trailPath.setAttribute("d", turn > 10
-      ? `M${X(ex)} ${ey}Q${X(rx)} ${ey} ${X(rx)} ${ey + turn}L${X(rx)} ${endY}`
-      : `M${X(rx)} ${ey}L${X(rx)} ${endY}`);
+      ? `M${X(ex)} ${ey}Q${X(rx)} ${ey} ${X(rx)} ${curveEnd}L${X(rx)} ${Math.max(curveEnd, rocketY)}`
+      : `M${X(rx)} ${ey}L${X(rx)} ${Math.max(ey, rocketY)}`);
 
     // The last planet the rocket has passed
     let passed = 0;
