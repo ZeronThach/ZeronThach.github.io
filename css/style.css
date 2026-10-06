@@ -474,6 +474,13 @@ main, .site-footer { position: relative; z-index: 1; }
 }
 .space svg { display: block; }
 .space-backdrop, .space-trail, .space-planet, .space-object { position: absolute; top: 0; left: 0; }
+.space-planet { z-index: 1; }
+.space-object { z-index: 2; }
+/* Roaming objects fly behind the planets and your content */
+.space-object--roam,
+.space-object--roam.is-dragging,
+.space-object--roam.is-flying { z-index: 0; }
+
 .space-planet svg, .space-object svg,
 .space-planet img, .space-object img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
@@ -498,12 +505,12 @@ main, .site-footer { position: relative; z-index: 1; }
 .space-object:hover { transform: rotate(var(--angle, 0deg)) scale(1.04); }
 .space-object.is-dragging {
   cursor: grabbing;
-  z-index: 2;
+  z-index: 3;
   transform: rotate(var(--angle, 0deg)) scale(1.1);
   filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.35));
 }
 /* While coasting after a flick, the angle changes every frame, so no smoothing */
-.space-object.is-flying { transition: filter 0.15s ease; z-index: 2; }
+.space-object.is-flying { transition: filter 0.15s ease; z-index: 3; }
 
 /* The rocket stays in the middle of the screen while the page scrolls */
 .rocket {
