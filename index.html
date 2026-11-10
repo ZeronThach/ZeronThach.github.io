@@ -1,95 +1,218 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page="board">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!--
-    You don't need to edit this file.
-    All of your content (name, projects, links) lives in js/config.js.
-  -->
-  <title>Portfolio</title>
-  <meta name="description" content="">
+  <title>Zeron Thach — Case File</title>
+  <meta name="description" content="Portfolio of Zeron Thach.">
+
+  <!-- Picks the saved lighting (night board / case report) before the page draws, so it doesn't flash. -->
+  <script>
+    (function () {
+      var d = document.documentElement, t = "dark";
+      try { t = localStorage.getItem("theme") || "dark"; } catch (e) {}
+      d.dataset.theme = t;
+      if (d.dataset.page === "board" &&
+          t === "dark" &&
+          matchMedia("(min-width: 900px) and (min-height: 520px)").matches) {
+        d.classList.add("board-mode");
+      }
+    })();
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-
-  <!-- Apply the saved light/dark choice before the page draws, so it doesn't flash -->
-  <script>
-    try {
-      const saved = localStorage.getItem("theme");
-      if (saved) document.documentElement.dataset.theme = saved;
-    } catch (e) {}
-  </script>
 </head>
-<body data-page="home">
-  <a class="skip-link" href="#main">Skip to content</a>
+<body class="page-board">
+  <a class="skip-link" href="#case">Skip to the case file</a>
 
-  <div class="error-banner" id="config-error" role="alert" hidden></div>
-
-  <header class="site-header">
-    <nav class="nav" aria-label="Main">
-      <a class="nav-home" id="nav-home" href="#top"></a>
-      <ul class="nav-links" id="nav-links"></ul>
-      <button class="theme-toggle" type="button" aria-label="Switch between light and dark mode">
-        <span class="theme-toggle-icon" aria-hidden="true"></span>
-      </button>
-    </nav>
+  <header class="masthead">
+    <!-- The hanging lamp is the light/dark switch. js/board.js draws it. -->
+    <button class="lamp" type="button" aria-pressed="true" aria-label="Desk lamp: switch between the night board and the daylight case report"></button>
   </header>
 
-  <main id="main">
-    <section class="hero" id="top">
-      <h1 class="hero-name" id="hero-name"></h1>
-      <p class="hero-intro" id="hero-intro"></p>
-      <ul class="hero-links" id="hero-links"></ul>
-    </section>
+  <main id="case" class="scene">
+    <div class="board">
+      <div class="cork">
 
-    <section class="section" id="projects" aria-labelledby="projects-heading" hidden>
-      <h2 id="projects-heading">Projects</h2>
-      <div class="project-grid" id="project-list"></div>
-    </section>
+        <p class="case-no board-only" aria-hidden="true">Case No. ZT-001 · Open</p>
 
-    <section class="section" id="experience" aria-labelledby="experience-heading" hidden>
-      <h2 id="experience-heading">Experience</h2>
-      <ol class="timeline" id="timeline"></ol>
-    </section>
+        <!-- ============ SUBJECT (your photo) ============ -->
+        <section class="group group--subject" aria-label="Subject">
+          <a class="item polaroid polaroid--subject" href="about.html" data-node="subject"
+             style="--x:44.25;--y:7;--w:11.5;--r:-1">
+            <span class="pin" data-pin="subject-top"></span>
+            <span class="photo"><img src="assets/img/me/portrait.webp" alt="" style="object-position: 50% 30%"></span>
+            <span class="caption">Zeron Thach</span>
+            <span class="pin pin--bottom" data-pin="subject-bottom"></span>
+          </a>
+          <div class="dossier">
+            <p class="kicker">Case report · No. ZT-001</p>
+            <h1>Zeron Thach</h1>
+            <p class="dossier-line">Mechanical Engineering student at Northeastern University.</p>
+            <p class="status">Status: <span>Open</span></p>
+          </div>
+        </section>
 
-    <section class="section" id="gallery" aria-labelledby="gallery-heading" hidden>
-      <h2 id="gallery-heading">Gallery</h2>
-      <div class="gallery" id="gallery-list"></div>
-    </section>
+        <!-- ============ RESUME ============ -->
+        <section class="group group--resume" aria-labelledby="resume-tag">
+          <a class="item sheet sheet--resume" href="resume.html" data-node="resume"
+             style="--x:10;--y:21;--w:17.5;--r:-1.5">
+            <h2 class="tag" id="resume-tag"><span class="pin" data-pin="resume-tag"></span>Resume</h2>
+            <span class="sheet-body" aria-hidden="true">
+              <span class="sheet-name">Zeron Thach</span>
+              <span class="bar bar--thin" style="--w:64%"></span>
+              <span class="sheet-head">Education</span>
+              <span class="bar" style="--w:88%"></span>
+              <span class="bar" style="--w:70%"></span>
+              <span class="sheet-head">Experience</span>
+              <span class="bar" style="--w:92%"></span>
+              <span class="bar" style="--w:84%"></span>
+              <span class="bar" style="--w:61%"></span>
+              <span class="bar" style="--w:89%"></span>
+              <span class="bar" style="--w:47%"></span>
+              <span class="sheet-head">Skills</span>
+              <span class="bar" style="--w:80%"></span>
+              <span class="bar" style="--w:56%"></span>
+            </span>
+            <span class="file-cta">Open file</span>
+            <span class="pin pin--corner" data-pin="resume-foot"></span>
+          </a>
+        </section>
 
-    <section class="section contact" id="contact" aria-labelledby="contact-heading" hidden>
-      <h2 id="contact-heading">Contact</h2>
-      <p id="contact-note"></p>
-      <p><a class="button" id="contact-button" href="#">Email me</a></p>
-    </section>
+        <!-- ============ PROJECTS ============ -->
+        <section class="group group--projects" aria-labelledby="projects-tag">
+          <h2 class="tag tag--free" id="projects-tag" data-node="projects" style="--x:71;--y:12;--r:1">
+            <span class="pin" data-pin="projects-tag"></span>Projects
+          </h2>
+          <ul class="polaroids" role="list">
+            <li style="--x:0;--y:6;--r:-4">
+              <a class="item polaroid" href="projects/project-01.html" data-node="p1">
+                <span class="pin" data-pin="p1"></span>
+                <span class="photo"><img src="assets/img/gachapon/prototype.webp" alt="" loading="lazy"></span>
+                <span class="caption">Gachapon</span>
+              </a>
+            </li>
+            <li style="--x:36;--y:0;--r:2.5">
+              <a class="item polaroid" href="projects/project-02.html" data-node="p2">
+                <span class="pin" data-pin="p2"></span>
+                <span class="photo"><img src="assets/img/crane/crane.webp" alt="" loading="lazy"></span>
+                <span class="caption">Crane Game</span>
+              </a>
+            </li>
+            <li style="--x:72;--y:8;--r:5">
+              <a class="item polaroid" href="projects/project-03.html" data-node="p3">
+                <span class="pin" data-pin="p3"></span>
+                <span class="photo"><img src="assets/img/organizer/render.webp" alt="" loading="lazy"></span>
+                <span class="caption">Art Organizer</span>
+              </a>
+            </li>
+            <li style="--x:14;--y:54;--r:3">
+              <a class="item polaroid" href="projects/project-04.html" data-node="p4">
+                <span class="pin" data-pin="p4"></span>
+                <span class="photo"><!-- <img src="assets/img/project-04.jpg" alt=""> --></span>
+                <span class="caption">Project 04</span>
+              </a>
+            </li>
+            <li style="--x:52;--y:56;--r:-2.5">
+              <a class="item polaroid" href="projects/project-05.html" data-node="p5">
+                <span class="pin" data-pin="p5"></span>
+                <span class="photo"><!-- <img src="assets/img/project-05.jpg" alt=""> --></span>
+                <span class="caption">Project 05</span>
+              </a>
+            </li>
+          </ul>
+        </section>
 
-    <noscript>
-      <p class="noscript">This site needs JavaScript turned on to show its content.</p>
-    </noscript>
+        <!-- ============ EXPERIENCE TIMELINE ============ -->
+        <section class="group group--timeline" aria-labelledby="timeline-tag">
+          <div class="strip" data-node="timeline" style="--x:15;--y:64;--w:64">
+            <h2 class="tag" id="timeline-tag"><span class="pin" data-pin="timeline-tag"></span>Experience Timeline</h2>
+            <span class="pin pin--start" data-pin="tl-start"></span>
+            <span class="pin pin--end" data-pin="tl-end"></span>
+          </div>
+          <ol class="timeline" role="list">
+            <li style="--r:-1.5">
+              <a class="item card" href="experience/entry-01.html" data-node="t1">
+                <span class="pin" data-pin="t1"></span>
+                <span class="date">2022</span>
+                <span class="card-role">Design Intern</span>
+                <span class="card-place">Payette Architecture</span>
+              </a>
+            </li>
+            <li style="--r:1">
+              <a class="item card" href="experience/entry-02.html" data-node="t2">
+                <span class="pin" data-pin="t2"></span>
+                <span class="date">2023</span>
+                <span class="card-role">Design Intern</span>
+                <span class="card-place">Bergmeyer Architecture</span>
+              </a>
+            </li>
+            <li style="--r:-0.5">
+              <a class="item card" href="experience/entry-03.html" data-node="t3">
+                <span class="pin" data-pin="t3"></span>
+                <span class="date">2026</span>
+                <span class="card-role">PLM &amp; CAD Co-op</span>
+                <span class="card-place">PDSVision</span>
+              </a>
+            </li>
+            <li style="--r:1.5">
+              <a class="item card" href="experience/entry-04.html" data-node="t4">
+                <span class="pin" data-pin="t4"></span>
+                <span class="date">Exp. 2027</span>
+                <span class="card-role">B.S. Mechanical Eng.</span>
+                <span class="card-place">Northeastern University</span>
+              </a>
+            </li>
+          </ol>
+        </section>
+
+        <!-- ============ SKILLS ============ -->
+        <section class="group group--skills" aria-labelledby="skills-tag">
+          <a class="item sheet sheet--skills" href="skills.html" data-node="skills"
+             style="--x:83;--y:64;--w:12.5;--r:1.5">
+            <h2 class="tag" id="skills-tag"><span class="pin" data-pin="skills-tag"></span>Skills</h2>
+            <span class="sheet-body" aria-hidden="true">
+              <span class="skill"><span class="skill-name">CAD &amp; PLM</span><span class="skill-list">SolidWorks · Creo</span></span>
+              <span class="skill"><span class="skill-name">Analysis</span><span class="skill-list">MATLAB · C++ · FEA</span></span>
+              <span class="skill"><span class="skill-name">Fabrication</span><span class="skill-list">3D print · Laser cut</span></span>
+              <span class="skill"><span class="skill-name">Tools</span><span class="skill-list">Jira · Rhino 3D</span></span>
+            </span>
+            <span class="file-cta">Open file</span>
+          </a>
+        </section>
+
+        <!-- ============ CONTACT ============ -->
+        <section class="group group--contact" aria-labelledby="contact-tag">
+          <a class="item card card--contact" href="contact.html" data-node="contact"
+             style="--x:31;--y:37;--w:10;--r:-3">
+            <span class="pin" data-pin="contact"></span>
+            <h2 class="tag tag--plain" id="contact-tag">Contact</h2>
+            <span class="contact-line"><span class="contact-key">Email</span><span class="bar" style="--w:100%"></span></span>
+            <span class="contact-line"><span class="contact-key">LinkedIn</span><span class="bar" style="--w:100%"></span></span>
+            <span class="file-cta">Open file</span>
+          </a>
+        </section>
+
+        <!-- ============ Board-only notes (decoration) ============ -->
+        <p class="note board-only" aria-hidden="true" style="--x:4.5;--y:41;--w:7.5;--r:-7">
+          <span class="pin" data-pin="note-1"></span>Build.<br>Analyze.<br>Improve.
+        </p>
+        <p class="note board-only" aria-hidden="true" style="--x:88.5;--y:43;--w:7;--r:5">
+          <span class="pin" data-pin="note-2"></span>Design.<br>Prototype.<br>Test.
+        </p>
+
+      </div>
+      <svg class="strings" aria-hidden="true" focusable="false"></svg>
+    </div>
   </main>
 
-  <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
-    <button class="lightbox-close" type="button" aria-label="Close photo">✕</button>
-    <figure>
-      <img id="lightbox-img" src="" alt="">
-      <figcaption id="lightbox-caption"></figcaption>
-    </figure>
-    <div class="lightbox-nav">
-      <button type="button" id="lightbox-prev">Previous</button>
-      <button type="button" id="lightbox-next">Next</button>
-    </div>
-  </dialog>
-
   <footer class="site-footer">
-    <p id="footer-text"></p>
+    <p>© <span data-year>2026</span> Zeron Thach</p>
   </footer>
 
-  <!-- config.js must load before main.js -->
-  <script src="js/config.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/space.js"></script>
+  <script src="js/board.js" defer></script>
 </body>
 </html>

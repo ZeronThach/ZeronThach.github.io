@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zeron Thach — Zeron Thach</title>
+  <meta name="description" content="">
+  <script>
+    (function () {
+      var t = "dark";
+      try { t = localStorage.getItem("theme") || "dark"; } catch (e) {}
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page-doc">
+  <a class="skip-link" href="#file">Skip to the file</a>
+
+  <header class="masthead">
+    <button class="lamp" type="button" aria-pressed="true" aria-label="Desk lamp: switch between night and daylight"></button>
+  </header>
+
+  <main id="file" class="doc">
+    <p class="back"><a href="index.html">← Back to the board</a></p>
+
+    <article class="paper">
+      <header class="doc-head">
+        <p class="kicker">Case No. ZT-001 · Subject</p>
+        <h1>Zeron Thach</h1>
+      </header>
+
+      <!-- ========== Your content goes below this line ========== -->
+      <div class="doc-body">
+        <img class="about-photo" src="assets/img/me/portrait.webp" width="1086" height="1448"
+             alt="Zeron Thach, wearing glasses and a black T-shirt, standing by a canal in a mountain town">
+
+        <p class="meta">Boston, MA · Mechanical Engineering, Northeastern University</p>
+        <p>Mechanical Engineering student at Northeastern University (B.S. expected December 2027), with co-op experience in PLM and CAD data management and a background in architectural design.</p>
+        <p>I design and build things end to end: modeling in SolidWorks and Creo, checking designs with FEA and hand calculations, and prototyping with 3D printing, laser cutting and Arduino.</p>
+        <p><a href="resume.html">Read the resume →</a></p>
+      </div>
+      <!-- ========== Your content goes above this line ========== -->
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span data-year>2026</span> Zeron Thach</p>
+  </footer>
+
+  <script src="js/board.js" defer></script>
+</body>
+</html>

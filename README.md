@@ -1,85 +1,67 @@
-# Portfolio Website Template
+# Zeron Thach — Portfolio
 
-A simple, clean portfolio site you can have online for free in about 15 minutes, even if you've never used GitHub or written code. Everything you need to change is in **one file**: `js/config.js`.
+The front page is an investigation board: your photo pinned at the top, red string running out to your resume, project Polaroids, an experience timeline, a skills sheet and a contact card. Every pinned item is a link to its own page.
 
----
+- **Dark** (the default) is night at the corkboard. On phones the board becomes a clean stack of case files.
+- **Light** shows the same content as a clean typed case report.
+- **The hanging lamp** at the top switches between the two. The choice is remembered.
 
-## Step 1: Make your own copy
+## Where to put your content
 
-1. Create a free account at [github.com](https://github.com) if you don't have one. Pick your username carefully, because it becomes part of your website address.
-2. At the top of this page, click the green **Use this template** button, then **Create a new repository**.
-3. For **Repository name**, type exactly: `your-username.github.io` (with your real GitHub username, all lowercase). This special name is what makes GitHub host it as a website.
-4. Make sure **Public** is selected, then click **Create repository**.
+All content is written directly in the HTML files. Each page has a comment that marks where your content goes.
 
-> Downloaded this as a zip instead? See [Uploading files manually](#uploading-files-manually) below.
+| What | File |
+| --- | --- |
+| Your photo and intro | `about.html` (the photo on the board is in `index.html`; search for `Your photo`) |
+| Resume | `resume.html` |
+| Projects 1–5 | `projects/project-01.html` … `project-05.html` |
+| Timeline entries 1–5 | `experience/entry-01.html` … `entry-05.html` |
+| Skills | `skills.html` |
+| Contact | `contact.html` |
 
-## Step 2: Turn on the website
+The board in `index.html` shows placeholder bars (they look like redacted lines). Replace them with real text when you're ready: for example change `<span class="date">20XX</span>` to `<span class="date">2025</span>`, and change `Project 01` to your project's name.
 
-1. In your new repository, click **Settings** (near the top right).
-2. In the left sidebar, click **Pages**.
-3. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
-4. Set the branch to **main** and the folder to **/ (root)**, then click **Save**.
-5. Wait one or two minutes, then visit `https://your-username.github.io`. You should see the template with "Your Name" on it.
+### Adding pictures
 
-## Step 3: Add your information
+1. Create an `assets/img` folder and upload your images there.
+2. In `index.html`, each Polaroid has a comment like `<!-- <img src="assets/img/project-01.jpg" alt=""> -->`. Remove the `<!--` and `-->` and change the file name. On the board, photos show in muted black-and-white and turn to full color when someone points at them.
 
-You can do all of this in your web browser.
+File names are case-sensitive: `Photo.PNG` and `photo.png` are different files.
 
-1. In your repository, click the **js** folder, then click **config.js**.
-2. Click the **pencil icon** (Edit this file) near the top right of the file.
-3. Replace the example text with your own. Only change text **inside the quotes**, and keep all the commas and brackets.
-4. When you're done, click the green **Commit changes** button, then **Commit changes** again in the popup.
-5. Wait a minute and refresh your site. Your changes appear every time you commit.
+## Moving things around on the board
 
-If you see a **red banner** at the top of your site, there's a typo in `config.js`. Look near the last line you changed for a missing comma `,`, quote `"`, or bracket.
+Each pinned item in `index.html` has a `style` like `--x:10;--y:21;--w:17.5;--r:-1.5`:
 
-## Step 4: Add screenshots and a resume (optional)
+- `--x` / `--y`: distance from the board's left / top edge, as a percent of the board
+- `--w`: width, as a percent of the board's width
+- `--r`: tilt in degrees
 
-1. Open the **assets/img** folder in your repository.
-2. Click **Add file → Upload files**, drag in your screenshot, and click **Commit changes**.
-3. In `config.js`, set that project's `image` to the file's path, for example `"assets/img/my-project.png"`.
+The strings follow automatically. To add or remove a string, edit the `STRINGS` list at the top of `js/board.js`.
 
-For a resume, upload your PDF to the **assets** folder the same way and set `resume` to something like `"assets/resume.pdf"`.
+## Colors and fonts
 
----
-
-## Uploading files manually
-
-If you have the template as a zip file instead of using the template button:
-
-1. Unzip it on your computer.
-2. On GitHub, click the **+** in the top right, then **New repository**. Name it `your-username.github.io`, keep it **Public**, and click **Create repository**.
-3. On the next page, click the link that says **uploading an existing file**.
-4. Open the unzipped folder, select everything **inside** it (`index.html`, `css`, `js`, `assets`, `README.md`), and drag it all onto the GitHub page. Don't drag the outer folder itself, or your site won't be found.
-5. Click **Commit changes**, then follow [Step 2](#step-2-turn-on-the-website).
+Colors are at the top of `css/style.css`: the first block is the night board, the second is the daylight report. Fonts: Special Elite (typewriter labels), Caveat (handwriting), IBM Plex Sans (body text).
 
 ## Previewing on your computer
 
-Before uploading, you can double-click `index.html` to open it in your browser. If you edit `config.js` on your computer, use a plain-text editor such as [VS Code](https://code.visualstudio.com) (free) or Notepad. Avoid Word, and on a Mac, TextEdit will only work if you choose **Format → Make Plain Text** first.
+Run this from the repository folder, then open http://localhost:8000:
 
-## Changing the colors
+```
+python -m http.server 8000
+```
 
-Open `css/style.css`. The colors are listed at the very top as hex codes like `#1f6f5c`. Search "color picker" online to find new codes and paste them in. The first block is light mode; the next two blocks are dark mode and should stay identical to each other.
-
-## Troubleshooting
-
-**My site shows "404 / There isn't a GitHub Pages site here."** Check that the repository name is exactly `your-username.github.io`, that `index.html` is at the top level (not inside another folder), and that Pages is turned on (Step 2). The first deploy can take a few minutes.
-
-**My changes aren't showing.** Wait a minute, then do a hard refresh: Ctrl+Shift+R on Windows, or Cmd+Shift+R on Mac.
-
-**My image doesn't appear.** File names must match exactly, including capital letters and the extension. `Project.PNG` and `project.png` are different files to GitHub.
-
-**A section disappeared.** Sections hide themselves when they're empty. For example, leaving `email` as `""` hides the Contact section.
-
----
+Opening `index.html` by double-clicking also works, but some browsers block parts of local files.
 
 ## Project structure
 
 ```
-index.html          page structure (no need to edit)
-js/config.js        YOUR CONTENT: edit this file
-js/main.js          builds the page from config.js (no need to edit)
-css/style.css       colors, fonts, and layout
-assets/             your resume PDF
-assets/img/         your project screenshots
+index.html            the board (front page)
+about.html            you
+resume.html           resume
+skills.html           skills
+contact.html          contact
+projects/             one page per project
+experience/           one page per timeline entry
+css/style.css         all styles (board, phone stack, light report, file pages)
+js/board.js           lamp switch, strings, hover tracing
 ```

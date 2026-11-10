@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Art Supply Organizer — Zeron Thach</title>
+  <meta name="description" content="A desk organizer for markers and colored pencils, designed in SolidWorks and drawn up for fabrication.">
+  <script>
+    (function () {
+      var t = "dark";
+      try { t = localStorage.getItem("theme") || "dark"; } catch (e) {}
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="page-doc">
+  <a class="skip-link" href="#file">Skip to the file</a>
+
+  <header class="masthead">
+    <button class="lamp" type="button" aria-pressed="true" aria-label="Desk lamp: switch between night and daylight"></button>
+  </header>
+
+  <main id="file" class="doc doc--wide">
+    <p class="back"><a href="../index.html">← Back to the board</a></p>
+
+    <article class="paper exhibit">
+
+      <!-- ===================== TITLE ===================== -->
+      <header class="doc-head">
+        <p class="kicker">Case No. ZT-001 · Exhibit 03</p>
+        <h1>Art Supply Organizer</h1>
+        <p class="exhibit-tags">SolidWorks · Engineering drawing · Product design</p>
+        <p class="exhibit-meta">High school · Personal project</p>
+      </header>
+
+      <div class="exhibit-top">
+
+        <!-- ===================== MAIN PICTURE ===================== -->
+        <figure class="exhibit-fig exhibit-hero">
+          <a href="../assets/img/organizer/render.webp">
+            <img src="../assets/img/organizer/render.webp" width="1116" height="950"
+                 alt="SolidWorks render of the wooden organizer: three bins along the back, a flat shelf in the middle and two pull-out drawers with black handles underneath">
+          </a>
+          <figcaption>Fig. A: SolidWorks render, drawers pulled out</figcaption>
+        </figure>
+
+        <div class="exhibit-side">
+
+          <!-- ===================== THE PROBLEM ===================== -->
+          <section>
+            <h2 class="exhibit-label">The problem</h2>
+            <p>My art supplies kept ending up in one pile. I wanted a single desk organizer that kept my Copic markers, Prismacolor markers and Prismacolor colored pencils apart, so each set was easy to find and grab.</p>
+            <p>An early SolidWorks project from high school: I modeled the organizer, then made a drawing to send to the fabrication team at school.</p>
+          </section>
+
+          <!-- ===================== THE DESIGN ===================== -->
+          <section>
+            <h2 class="exhibit-label">The design</h2>
+            <ul class="steps steps--plain">
+              <li>
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M3 7v11h18V7M9 9v9M15 9v9"/></svg>
+                </span>
+                <div>
+                  <h3>Three bins</h3>
+                  <p>Upright bins along the back, split by dividers, keep the different supplies separated.</p>
+                </div>
+              </li>
+              <li>
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M3 10h18M5 10v9M19 10v9"/></svg>
+                </span>
+                <div>
+                  <h3>Middle shelf</h3>
+                  <p>A flat shelf in front of the bins for whatever is in use.</p>
+                </div>
+              </li>
+              <li>
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1"/><path d="M3 12h18M10 9h4M10 15h4"/></svg>
+                </span>
+                <div>
+                  <h3>Two drawers</h3>
+                  <p>Pull-out drawers with handles underneath for extra storage.</p>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <div class="exhibit-bottom">
+
+        <!-- ===================== THE DRAWING (full width) ===================== -->
+        <section class="panel panel--wide">
+          <h2 class="exhibit-label">The drawing</h2>
+          <div class="panel-split">
+            <figure class="exhibit-fig">
+              <a href="../assets/img/organizer/drawing.png">
+                <img src="../assets/img/organizer/drawing.png" width="1438" height="1108" loading="lazy"
+                     alt="SolidWorks engineering drawing titled Art Supply Organizer: front, side and top views plus an isometric view, dimensioned in inches with fillet radii, at a scale of 1:5. Overall size 14.40 by 9.60 by 10.32 inches">
+              </a>
+            </figure>
+            <div>
+              <p class="panel-note">Fig. B: The drawing sent to the fabrication team.</p>
+              <p class="panel-text">Front, side and top views plus an isometric view, so the fabrication team could build the organizer without needing me there. Every dimension is in inches, including the wall and divider thicknesses and the fillet radii on the rounded edges. Overall, the organizer measures 14.40 × 9.60 × 10.32 in.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span data-year>2026</span> Zeron Thach</p>
+  </footer>
+
+  <script src="../js/board.js" defer></script>
+</body>
+</html>

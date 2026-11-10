@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resume — Zeron Thach</title>
+  <meta name="description" content="">
+  <script>
+    (function () {
+      var t = "dark";
+      try { t = localStorage.getItem("theme") || "dark"; } catch (e) {}
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page-doc">
+  <a class="skip-link" href="#file">Skip to the file</a>
+
+  <header class="masthead">
+    <button class="lamp" type="button" aria-pressed="true" aria-label="Desk lamp: switch between night and daylight"></button>
+  </header>
+
+  <main id="file" class="doc">
+    <p class="back"><a href="index.html">← Back to the board</a></p>
+
+    <article class="paper">
+      <header class="doc-head">
+        <p class="kicker">Case No. ZT-001 · File 01</p>
+        <h1>Resume</h1>
+      </header>
+
+      <!-- ========== Your content goes below this line ========== -->
+      <div class="doc-body">
+        <p class="meta">Boston, MA · <a href="mailto:Thach.z@northeastern.edu">Thach.z@northeastern.edu</a> · <a href="https://www.linkedin.com/in/zeron-t-383598283/">LinkedIn</a></p>
+        <!-- To offer a PDF download, put the file at assets/resume.pdf and remove the comment marks:
+        <p><a href="assets/resume.pdf">Download the PDF</a></p>
+        -->
+
+        <h2>Education</h2>
+        <div class="entry">
+          <div class="entry-head"><h3>Northeastern University, Boston, MA</h3><span class="meta">Expected December 2027</span></div>
+          <p>Bachelor of Science in Mechanical Engineering</p>
+          <p class="meta">Relevant coursework: Dynamics, Statics, Thermodynamics, Fluid Mechanics, Heat Transfer, Mechanics of Materials, ME Computation &amp; Design, System Analysis &amp; Control</p>
+        </div>
+
+        <h2>Experience</h2>
+        <div class="entry">
+          <div class="entry-head"><h3>PDSVision North America · PLM &amp; CAD Co-op</h3><span class="meta">Remote · Jan 2026 – Jun 2026</span></div>
+          <ul>
+          <li>Optimized Bissell’s PTC Creo data using root cause analysis, reducing average file size by ~40% (from 430 MB to 260 MB)</li>
+          <li>Managed and organized server infrastructure records for 14 enterprise manufacturing clients (e.g., Bissell Homecare, G&amp;W Electric) in Jira Assets, cutting search time from 15 minutes to 3–4 minutes</li>
+          <li>Automated alerting and ticket-tracking workflows for the support team, reducing missed and false alerts to 0</li>
+          <li>Developed a RACI chart for The Raymond Corporation’s server environment, defining ownership and escalation paths</li>
+          </ul>
+        </div>
+        <div class="entry">
+          <div class="entry-head"><h3>Bergmeyer Architecture · Design Intern</h3><span class="meta">Boston, MA · Jun 2023 – Aug 2023</span></div>
+          <ul>
+          <li>Modeled and 2D drafted 5 commercial spaces (3 restaurants, 2 retail stores), including Boston Pro Shop and Shake Shack, from concept through SketchUp</li>
+          <li>Supported 3–4 project teams by fabricating 3D-printed and laser-cut physical models and organizing 10+ project documentation packages</li>
+          </ul>
+        </div>
+        <div class="entry">
+          <div class="entry-head"><h3>Payette Architecture · Design Intern</h3><span class="meta">Boston, MA · Jun 2022 – Aug 2022</span></div>
+          <ul>
+          <li>Produced 20+ detailed Adobe Illustrator renderings and visual presentations supporting client design approvals</li>
+          <li>Led concept development of an interactive pavilion for the South Station Greenway that drew 1,000+ visitors in its first month</li>
+          </ul>
+        </div>
+
+        <h2>Engineering Projects</h2>
+        <div class="entry">
+          <div class="entry-head"><h3><a href="projects/project-01.html">Interactive Gachapon Prize Machine</a></h3><span class="meta">Nov 2025 – Dec 2025</span></div>
+          <ul>
+          <li>Designed in SolidWorks and built a coin-free gachapon machine in a 4-person team that dispenses capsule prizes (15 grams) as a reward for completing on-screen tasks</li>
+          <li>Programmed Arduino code to display a randomized task on an LCD screen, with AI-based pose estimation to track movement and completion</li>
+          <li>Calculated and verified the torque (3–4 mN·m) of the gear motors in the dispensing mechanism, accounting for friction and environmental factors</li>
+          </ul>
+        </div>
+        <div class="entry">
+          <div class="entry-head"><h3><a href="projects/project-02.html">Hydraulic Crane Carnival Game</a></h3><span class="meta">Nov 2024 – Dec 2024</span></div>
+          <ul>
+          <li>Designed for assembly (DFA) and built a hydraulic crane game in a 3-person team using MDF, wood and 3D-printed components, delivering a sturdy, flexible system with a $58 BOM</li>
+          <li>Simulated stress on the crane arms using FEA (SolidWorks Simulation), leading to an increase in arm thickness (~3 mm)</li>
+          <li>Programmed an Arduino-based automated scoring system using an ultrasonic distance sensor, ensuring reliable gameplay with no manual scorekeeping</li>
+          </ul>
+        </div>
+
+        <h2>Technical Skills</h2>
+        <ul class="plain">
+          <li><strong>CAD &amp; PLM:</strong> SolidWorks, PTC Creo Parametric, PTC Windchill PLM, AutoCAD, Rhino 3D, GD&amp;T</li>
+          <li><strong>Programming &amp; Analysis:</strong> MATLAB, C++, JavaScript, Arduino, FEA (SolidWorks)</li>
+          <li><strong>Prototyping &amp; Fabrication:</strong> 3D Printing (FDM), Laser Cutting, Scale Model Fabrication, Woodworking</li>
+          <li><strong>Tools:</strong> Jira / Jira Assets, Microsoft Office, Adobe Illustrator, Claude Code, ChatGPT</li>
+        </ul>
+      </div>
+      <!-- ========== Your content goes above this line ========== -->
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span data-year>2026</span> Zeron Thach</p>
+  </footer>
+
+  <script src="js/board.js" defer></script>
+</body>
+</html>

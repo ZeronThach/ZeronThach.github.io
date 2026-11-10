@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interactive Gachapon Prize Machine — Zeron Thach</title>
+  <meta name="description" content="An interactive gachapon machine that gives out prizes for physical activity instead of money.">
+  <script>
+    (function () {
+      var t = "dark";
+      try { t = localStorage.getItem("theme") || "dark"; } catch (e) {}
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="page-doc">
+  <a class="skip-link" href="#file">Skip to the file</a>
+
+  <header class="masthead">
+    <button class="lamp" type="button" aria-pressed="true" aria-label="Desk lamp: switch between night and daylight"></button>
+  </header>
+
+  <main id="file" class="doc doc--wide">
+    <p class="back"><a href="../index.html">← Back to the board</a></p>
+
+    <article class="paper exhibit">
+
+      <!-- ===================== TITLE ===================== -->
+      <header class="doc-head">
+        <p class="kicker">Case No. ZT-001 · Exhibit 01</p>
+        <h1>Interactive Gachapon Prize Machine</h1>
+        <p class="exhibit-tags">Mechanical design · Embedded systems · Computer vision</p>
+        <p class="exhibit-meta">Nov 2025 – Dec 2025 · 4-person team</p>
+      </header>
+
+      <div class="exhibit-top">
+
+        <!-- ===================== MAIN PHOTO ===================== -->
+        <figure class="exhibit-fig exhibit-hero">
+          <a href="../assets/img/gachapon/prototype.webp">
+            <img src="../assets/img/gachapon/prototype.webp" width="1168" height="1346"
+                 alt="The finished gachapon prototype: a white two-tier tower on four legs, with the prize hopper on top and a side box holding the LCD screen and wiring">
+          </a>
+          <figcaption>Fig. A: The finished prototype</figcaption>
+        </figure>
+
+        <div class="exhibit-side">
+
+          <!-- ===================== OVERVIEW ===================== -->
+          <section>
+            <h2 class="exhibit-label">Overview</h2>
+            <p>An interactive twist on the gachapon machine: instead of money, it takes physical activity to win a prize. Users get a randomized challenge on an LCD screen and earn a prize or candy when they complete it.</p>
+            <p>By combining mechanical design, embedded systems and computer vision, the machine bridges the gap between digital interaction and a physical reward.</p>
+          </section>
+
+          <!-- ===================== HOW IT WORKS ===================== -->
+          <section>
+            <h2 class="exhibit-label">How it works</h2>
+            <ol class="steps">
+              <li>
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" class="dot"/><circle cx="15" cy="15" r="1.2" class="dot"/><circle cx="15" cy="9" r="1.2" class="dot"/><circle cx="9" cy="15" r="1.2" class="dot"/><circle cx="12" cy="12" r="1.2" class="dot"/></svg>
+                </span>
+                <div>
+                  <h3>1. Generate a challenge</h3>
+                  <p>When it’s turned on, the Arduino greets you and picks a random task from a task list that the user can edit.</p>
+                </div>
+              </li>
+              <li>
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="11" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>
+                </span>
+                <div>
+                  <h3>2. Display it on the LCD</h3>
+                  <p>The task appears on the LCD screen for the user to read.</p>
+                </div>
+              </li>
+              <li>
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3"/><circle cx="12" cy="7" r="1.6"/><path d="M8 10.5l4 1 4-1M12 11.5v3M12 14.5l-2.5 4M12 14.5l2.5 4"/></svg>
+                </span>
+                <div>
+                  <h3>3. Track movement</h3>
+                  <p>A camera connected to a laptop running MediaPipe Pose Landmarker tracks the user’s movement and checks that the task is complete.</p>
+                </div>
+              </li>
+              <li>
+                <span class="icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="1"/><path d="M3 7h18v3H3zM12 7v13M12 7c-1.5-3-5-3.5-5-1.5S10 7 12 7zM12 7c1.5-3 5-3.5 5-1.5S14 7 12 7z"/></svg>
+                </span>
+                <div>
+                  <h3>4. Dispense the prize</h3>
+                  <p>The motor spins the dispensing mechanism and releases a prize.</p>
+                </div>
+              </li>
+            </ol>
+          </section>
+        </div>
+      </div>
+
+      <div class="exhibit-bottom">
+
+        <!-- ===================== SOLIDWORKS DESIGN ===================== -->
+        <section class="panel">
+          <h2 class="exhibit-label">SolidWorks design</h2>
+          <div class="fig-pair">
+            <figure class="exhibit-fig">
+              <a href="../assets/img/gachapon/cad-model.png">
+                <img src="../assets/img/gachapon/cad-model.png" width="539" height="873" loading="lazy"
+                     alt="SolidWorks section view of the cube design, showing the central shaft, prize compartments and motor housing">
+              </a>
+              <figcaption>Cube design (built)</figcaption>
+            </figure>
+            <figure class="exhibit-fig">
+              <a href="../assets/img/gachapon/cad-cutaway.png">
+                <img src="../assets/img/gachapon/cad-cutaway.png" width="823" height="1023" loading="lazy"
+                     alt="SolidWorks section view of the round design, showing the shaft through two stacked prize levels">
+              </a>
+              <figcaption>Round design (improved)</figcaption>
+            </figure>
+          </div>
+          <p class="panel-note">Fig. B: The enclosure and internal layout, modeled in SolidWorks.</p>
+          <p class="panel-text">The round model was our second, improved design. The 3D printer had problems throughout the build week, so we couldn’t print it in time and went with the cube design instead.</p>
+        </section>
+
+        <!-- ===================== ELECTRONICS ===================== -->
+        <section class="panel">
+          <h2 class="exhibit-label">Electronics</h2>
+          <figure class="exhibit-fig">
+            <a href="../assets/img/gachapon/circuit.webp">
+              <img src="../assets/img/gachapon/circuit.webp" width="515" height="473" loading="lazy"
+                   alt="The Arduino board and breadboard wiring, with the LCD screen reading “Welcome Human, Day: 1”">
+            </a>
+          </figure>
+          <p class="panel-note">Fig. C: The display, controller and motor wiring, integrated on an Arduino.</p>
+        </section>
+
+        <!-- ===================== KEY FEATURES ===================== -->
+        <section class="panel">
+          <h2 class="exhibit-label">Key features</h2>
+          <ul class="steps steps--plain">
+            <li>
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M15 3.5a5 5 0 0 0-4.6 6.9L3.8 17a2.2 2.2 0 0 0 3.1 3.1l6.6-6.6A5 5 0 0 0 20.5 9l-3.2 1.1-2.4-2.4L16 4.5a5 5 0 0 0-1-1z"/></svg>
+              </span>
+              <div>
+                <h3>Mechanical design</h3>
+                <p>Calculated and verified the motor torque (3–4 mN·m) needed to move the prizes, and added ball bearings and gear motors.</p>
+              </div>
+            </li>
+            <li>
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/><rect x="9.5" y="9.5" width="5" height="5"/><path d="M9 2.5v3.5M15 2.5v3.5M9 18v3.5M15 18v3.5M2.5 9H6M2.5 15H6M18 9h3.5M18 15h3.5"/></svg>
+              </span>
+              <div>
+                <h3>Embedded programming</h3>
+                <p>Task randomization and dispensing control, with easy-to-follow code and wiring.</p>
+              </div>
+            </li>
+            <li>
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 8V4h4M17 4h4v4M21 16v4h-4M7 20H3v-4"/><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="1" class="dot"/></svg>
+              </span>
+              <div>
+                <h3>Computer vision</h3>
+                <p>Uses the open-source MediaPipe Pose Landmarker to track movement and send instructions to the Arduino.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span data-year>2026</span> Zeron Thach</p>
+  </footer>
+
+  <script src="../js/board.js" defer></script>
+</body>
+</html>

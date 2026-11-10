@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hydraulic Crane Carnival Game — Zeron Thach</title>
+  <meta name="description" content="A carnival-style crane game driven by syringe hydraulics, with an Arduino scoring system.">
+  <script>
+    (function () {
+      var t = "dark";
+      try { t = localStorage.getItem("theme") || "dark"; } catch (e) {}
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="page-doc">
+  <a class="skip-link" href="#file">Skip to the file</a>
+
+  <header class="masthead">
+    <button class="lamp" type="button" aria-pressed="true" aria-label="Desk lamp: switch between night and daylight"></button>
+  </header>
+
+  <main id="file" class="doc doc--wide">
+    <p class="back"><a href="../index.html">← Back to the board</a></p>
+
+    <article class="paper exhibit">
+
+      <!-- ===================== TITLE ===================== -->
+      <header class="doc-head">
+        <p class="kicker">Case No. ZT-001 · Exhibit 02</p>
+        <h1>Hydraulic Crane Carnival Game</h1>
+        <p class="exhibit-tags">Hydraulics · Structural analysis · Embedded systems</p>
+        <p class="exhibit-meta">Nov 2024 – Dec 2024 · 3-person team · $58 BOM</p>
+      </header>
+
+      <!-- The "flip" class puts the photo on the right on wide screens -->
+      <div class="exhibit-top exhibit-top--flip">
+
+        <!-- ===================== MAIN PHOTO ===================== -->
+        <figure class="exhibit-fig exhibit-hero">
+          <a href="../assets/img/crane/setup.jpg">
+            <img src="../assets/img/crane/setup.jpg" width="1179" height="1748"
+                 alt="The full game on a table: the wooden hydraulic crane in front, the yellow ship holding the 3D-printed objects behind it, and the cardboard score box with its LCD screen on the right">
+          </a>
+          <figcaption>Fig. A: The full game: crane, ship and score box</figcaption>
+        </figure>
+
+        <div class="exhibit-side">
+
+          <!-- ===================== OVERVIEW ===================== -->
+          <section>
+            <h2 class="exhibit-label">Overview</h2>
+            <p>Inspired by classic carnival arcade games, this hydraulic crane mixes hands-on engineering with interactive gameplay. Players work a manually controlled hydraulic mechanism to pick up and move 3D-printed objects, testing the crane’s strength and range of motion, and score points based on each object’s size and weight.</p>
+            <p>The project combines structural analysis, mechanical design and embedded electronics to create an engaging game experience.</p>
+          </section>
+
+          <!-- ===================== HOW IT WORKS ===================== -->
+          <section>
+            <h2 class="exhibit-label">How it works</h2>
+            <ol class="steps steps--numbered">
+              <li>
+                <span class="icon" aria-hidden="true">1</span>
+                <div>
+                  <h3>Controls</h3>
+                  <p>Players move the crane in the x, y and z directions, and open and close the claw, using the pressure difference in the syringes.</p>
+                </div>
+              </li>
+              <li>
+                <span class="icon" aria-hidden="true">2</span>
+                <div>
+                  <h3>Gameplay</h3>
+                  <p>Players pick up objects placed randomly on the ship and drop them into the score box.</p>
+                </div>
+              </li>
+              <li>
+                <span class="icon" aria-hidden="true">3</span>
+                <div>
+                  <h3>Scoring</h3>
+                  <p>An ultrasonic sensor in the box tracks how long each item takes to pass by. Bigger items pass by for longer, so they score more.</p>
+                </div>
+              </li>
+              <li>
+                <span class="icon" aria-hidden="true">4</span>
+                <div>
+                  <h3>Winning</h3>
+                  <p>The game ends when the built-in timer runs out or the player clears every item.</p>
+                </div>
+              </li>
+            </ol>
+          </section>
+        </div>
+      </div>
+
+      <div class="exhibit-bottom">
+
+        <!-- ===================== THE CRANE ===================== -->
+        <section class="panel">
+          <h2 class="exhibit-label">The crane</h2>
+          <figure class="exhibit-fig">
+            <a href="../assets/img/crane/crane.webp">
+              <img src="../assets/img/crane/crane.webp" width="976" height="1248" loading="lazy"
+                   alt="The laser-cut wooden crane: a tower and arm on a base plate, moved by syringes connected with clear tubing, next to a row of control syringes">
+            </a>
+          </figure>
+          <p class="panel-note">Fig. B: The hydraulic crane, my main part of the project.</p>
+        </section>
+
+        <!-- ===================== WIRING ===================== -->
+        <section class="panel">
+          <h2 class="exhibit-label">Wiring</h2>
+          <figure class="exhibit-fig">
+            <a href="../assets/img/crane/wiring.png">
+              <img src="../assets/img/crane/wiring.png" width="1182" height="993" loading="lazy"
+                   alt="Wiring diagram: the distance sensor, potentiometer and LCD connect through a breadboard to Arduino pins 3, 4 and 8 to 13, plus 5V and ground">
+            </a>
+          </figure>
+          <p class="panel-note">Fig. C: Breadboard wiring for the sensor, potentiometer and LCD.</p>
+          <p class="panel-text">I drew this diagram as a reference so the team could reconnect any wire that came loose during the showcase.</p>
+        </section>
+
+        <!-- ===================== KEY FEATURES ===================== -->
+        <section class="panel">
+          <h2 class="exhibit-label">Key features</h2>
+          <ul class="steps steps--plain">
+            <li>
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="3" y="9" width="13" height="6" rx="1"/><path d="M16 12h5M19.5 10v4M3 12H1.5M7 9v6M10 9v6"/></svg>
+              </span>
+              <div>
+                <h3>Syringe hydraulics</h3>
+                <p>Used syringe-based hydraulics instead of motors to stay within the budget.</p>
+              </div>
+            </li>
+            <li>
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 6h18M3 18h18M6 6v12M18 6v12M6 6l12 12M18 6L6 18"/></svg>
+              </span>
+              <div>
+                <h3>Structural optimization</h3>
+                <p>Ran FEA in SolidWorks Simulation to evaluate stress, which led us to make the crane arms about 3 mm thicker.</p>
+              </div>
+            </li>
+            <li>
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4" class="dot"/><path d="M9 8.5a5 5 0 0 1 0 7M12.5 6a8.5 8.5 0 0 1 0 12M16 3.5a12 12 0 0 1 0 17"/></svg>
+              </span>
+              <div>
+                <h3>Automated scoring</h3>
+                <p>Integrated an Arduino and an ultrasonic sensor to detect successful plays and keep score.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- ===================== STRESS SIMULATION (full width) ===================== -->
+        <section class="panel panel--wide">
+          <h2 class="exhibit-label">Stress simulation</h2>
+          <div class="panel-split">
+            <figure class="exhibit-fig">
+              <a href="../assets/img/crane/fea.png">
+                <img src="../assets/img/crane/fea.png" width="1478" height="626" loading="lazy"
+                     alt="SolidWorks Simulation von Mises stress plot of the crane arm: two beams reaching out from a support tower, mostly blue, with higher stress in green and yellow where the beams leave the tower">
+              </a>
+            </figure>
+            <div>
+              <p class="panel-note">Fig. D: Von Mises stress in the crane hand under a 2.4 N load, from SolidWorks Simulation.</p>
+              <p class="panel-text">The test applies a theoretical 2.4 N of force, about what the crane feels when it picks up a phone. The highest stress (about 18 MPa) sits where the arm leaves the tower, while most of the part stays low. Based on this, we made the arms about 3 mm thicker to strengthen that area.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span data-year>2026</span> Zeron Thach</p>
+  </footer>
+
+  <script src="../js/board.js" defer></script>
+</body>
+</html>
